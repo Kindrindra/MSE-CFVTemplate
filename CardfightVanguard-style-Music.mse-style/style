@@ -1,0 +1,577 @@
+mse version: 0.3.8
+game: CardfightVanguard
+short name:  Music
+full name: Music Card Type
+icon: icon.png
+position hint: 3
+installer group: cardfight/style/V style
+#Description: Music card type
+
+version: 2018-02-15
+depends on:
+	package: CardfightVanguard.mse-game
+	version: 2020-02-26
+depends on:
+	package: CardfightVanguard.mse-symbol-font
+	version: 2017-09-10
+
+card width: 375
+card height: 549
+card dpi: 150
+########################################## Extra Scripts
+init script:
+	# Is the unit a special unit?
+	is_g := { 
+		if card.card_frame == "stride" then true
+		else if card.card_frame == "gguard" then true
+		else false
+	}
+	
+	# Scripts for text and flavor boxes
+	rule_lines := { card_style.rule_text.content_lines }
+	text_size := { 20*rule_lines() - 2*rule_lines() }
+	textbox_type := { 
+		if rule_lines() == 1 then 0
+		else if rule_lines() == 2 then 1
+		else if rule_lines() > 2 and rule_lines() <= 5 then 2
+		else if rule_lines() > 5 and rule_lines() < 7 then 3
+		else 4
+	}
+	text_adjust := {
+		rule_lines() / 2
+	}
+	
+	get_text_alignment := {
+		if rule_lines() == 1 then "top center" else "top left"
+	}
+	
+	get_text_color := {
+		if is_order() then rgb(255,255,255)
+		else rgb(0,0,0)
+	}
+	
+	has_overlay := { if styling.Edit_Overlay=="Yes" then true else false }
+	
+	is_music := {card.order_type == "normal" or
+	card.order_type == "blitz" or
+	card.order_type == "set" or
+	card.order_type == "trigger"}
+	
+	music_grade_name := {if is_music() then "V_Music_" else "Custom_"}
+	
+	get_clan_shadow_color := { if card.clan == "Link Joker" then rgb(230,0,0) else if card.card_nation == "StarGate" then rgb(255,255,255) else if remove_tags(card.clan) == "Bang Dream!" then rgb(234,107,132) else rgb(0,0,0) } 
+	
+	get_music_frame := {if remove_tags(card.clan) == "Bang Dream!" then "V_Layers/Frame_MusicBang.png" else "V_Layers/Frame_MusicBase.png" }
+	
+########################################## Extra styling options
+
+
+########################################## Card fields
+card style:
+	card_image:
+		top: 549
+		left: 10
+		#height: 375
+		height: 222
+		width: 549
+		z index: -2
+		angle: 90
+		mask: custom_image_mask.png
+		#mask: { if card.card_frame=="normal" then "music_image_mask.png" else "g_order_image_mask.png" }
+		default: image_bg.jpg
+		
+	overlay_image:
+		top: 549
+		left: 10
+		height: { if has_overlay() then 222 else 0 }
+		width: { if has_overlay() then 549 else 0 }
+		z index: -1
+		visible: { has_overlay() }
+		mask: border_mask.png
+		default: image_bg.jpg
+		
+	card_nation:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 1
+		visible: { card.card_frame != "order" }
+		render style: image
+		choice images:
+			United Sanctuary: V_Layers/Nations/UniSan.png
+			Dragon Empire: V_Layers/Nations/DraEmp.png
+			Dark Zone: V_Layers/Nations/DarkZone.png
+			Zoo: V_Layers/Nations/Zoo.png
+			Star Gate: V_Layers/Nations/StarGate.png
+			Magallanica: V_Layers/Nations/Magallanica.png
+			Cray Elemental: V_Layers/Nations/CrayElemental.png
+			
+	nation_control:
+		top: 71
+		left: 241
+		height: 16
+		width: 30
+		z index: 6
+		angle: 90
+		visible: { card.card_frame != "order" }
+		render style: image
+
+	card_frame:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 0
+		render style: image
+		mask: border_mask.png
+		choice images:
+			normal: { get_music_frame() }
+			trigger: { get_music_frame() }
+			stride: V_Layers/GOrder.png
+			gguard: V_Layers/GBlitzOrder.png
+			order: V_Layers/CommandCard.png
+			token: V_Layers/CommandTicketFrame.png
+			
+	frame_control:
+		top: 0
+		left: 342
+		width: 33
+		height: 549
+		z index: 5
+		render style: image
+			
+	grade_control:
+		top: 495
+		left: 8
+		height: 45
+		width: 45
+		z index: 6
+		render style: image
+		
+	card_grade:
+		top: { if is_music() then 0 else 4 }
+		left: 1
+		height: 549
+		width: 375
+		z index: 3
+		render style: image
+		choice images:
+			grade0: { "V_Layers/" + music_grade_name() + "Grade0.png" }
+			grade1: { "V_Layers/" + music_grade_name() + "Grade1.png" }
+			grade2: { "V_Layers/" + music_grade_name() + "Grade2.png" }
+			grade3: { "V_Layers/" + music_grade_name() + "Grade3.png" }
+			grade4: { "V_Layers/" + music_grade_name() + "Grade4.png" }
+			grade5: { "V_Layers/" + music_grade_name() + "Grade5.png" }
+			
+	type_control:
+		top: 520
+		left: 218
+		height: 18
+		width: 45
+		angle: 90
+		z index: 6
+		render style: image
+			
+	order_type:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 1
+		render style: image
+		choice images:
+			normal: V_Layers/V_TypeNormalMusic.png
+			blitz: V_Layers/V_TypeBlitzMusic.png
+			trigger: V_Layers/V_TypeTriggerMusic.png
+			set: V_Layers/V_TypeSetMusic.png
+			g order: V_Layers/V_TypeGOrder.png
+			g blitz order: V_Layers/V_TypeGBlitzOrder.png
+			g set order: V_Layers/V_TypeGSetOrder.png
+			
+	rarity_control:
+		top: 460
+		left: 360
+		width: 7
+		height: 20
+		z index: 6
+		render style: image
+			
+	card_rarity:
+		top: -23
+		left: -6
+		height: 549
+		width: 375
+		z index: 3
+		render style: image
+		visible: { not is_token() }
+		choice images:
+			Common: V_Layers/V_Rarity_C.png
+			Rare: V_Layers/V_Rarity_R.png
+			DoubleRare: V_Layers/V_Rarity_RR.png
+			TripleRare: V_Layers/V_Rarity_RRR.png
+			VanguardRare: V_Layers/V_Rarity_VR.png
+			SpecialParallel: V_Layers/V_Rarity_SP.png
+			SpecialVanguardRare: V_Layers/V_Rarity_SVR.png
+			OriginRare: V_Layers/V_Rarity_OR.png
+			
+	card_name:
+		top: 478
+		left: 238
+		height: 18
+		width: 286
+		angle: 90
+		alignment: middle center overflow-shrink
+		z index: 6
+		font:
+			name: Impact
+			size: 13
+			#weight: bold
+			style: italic
+			color: rgb(0,0,0)
+	
+	clan:
+		#top: 154
+		top: 174
+		left: 232
+		height: 15
+		width: 102
+		#width: 72
+		z index: 6
+		angle: 90
+		visible: { card.card_frame != "order" }
+		alignment: center overflow-shrink
+		font:
+			name: Vera Humana 95 Bold
+			size: 10
+			scale down to: 9
+			color: { if card.card_nation == "StarGate" then rgb(0,0,0) else rgb(255,247,245) }
+			shadow color: { get_clan_shadow_color() }
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 0
+	
+	race:
+		#top: 520
+		top: 169
+		#left: 221
+		left: 251
+		height: 10
+		width: 99
+		angle: 90
+		z index: 6
+		visible: { card.card_frame != "order" }
+		alignment: middle center overflow-shrink
+		font:
+			name: Vera Humana 95 Bold
+			size: 8
+			scale down to: 7
+			color: rgb(255,247,245)
+			shadow color: rgb(0,0,0)
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 0
+	
+	rule_text:
+		top: 515
+		left: { 265  + text_adjust() }
+		height: 85
+		width: 481
+		angle: 90
+		z index: 6
+		alignment: { get_text_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		font:
+			name: Vera Humana 95 Bold
+			italic name: Vera Humana 95 Italic
+			size: { get_text_size() }
+			scale down to: 4
+			color: rgb(255,255,255)
+		symbol font:
+			name: CardfightVanguard-Orders
+			scale down to: 4
+			size: { get_text_size()+0.3 }
+			
+	flavor_text:
+		bottom: 498
+		left: 218
+		height: { if card_style.flavor_text.content_lines > 1 then 35 else 21 }
+		#k := { card_style.flavor_text.content_width + 32 }
+		width: 452
+		z index: 6
+		angle: 90
+		alignment: center overflow-shrink
+		padding left: 1
+		padding right: 1
+		padding top: 1
+		padding bottom: 1
+		line height hard: 0.7
+		line height hard max: 0.7
+		font:
+			name: Andalus
+			size: 11.5
+			weight: bold
+			scale down to: 9
+			color: rgb(255,255,255)
+			
+	flavor_box:
+		bottom: { max(14, (275 + ((card_style.flavor_text.content_width + 12)/2))) }
+		left: { 217 }
+		height: { if card_style.flavor_text.content_lines > 1 then 34 else 19 }
+		width: { min(450, (card_style.flavor_text.content_width + 16) ) }
+		angle: 90
+		z index: 2
+		visible: { if card.flavor_text != "" then true else false }
+		render style: image
+		choice images:
+			default: { if card_style.flavor_text.content_lines > 1 then "flavor_bg2.png" else "flavor_bg.png" }
+			
+	illus line:
+		top: 60
+		left: 360
+		width: 40
+		height: 10
+		z index: 6
+		angle: 90
+		alignment: middle right
+		font:
+			name: Adelon-Serial-Medium
+			weight: bold
+			size: 6
+			color: { if is_g() then rgb(255,255,255) else rgb(0,0,0) }
+	
+	set code:
+		top: 527
+		left: 360
+		width: 47
+		height: 7
+		angle: 90
+		alignment: middle center overflow-shrink
+		z index: 6
+		font:
+			name: Adelon-Serial-Medium
+			weight: bold
+			size: 5.5
+			color: { if is_g() then rgb(255,255,255) else rgb(0,0,0) }
+			
+			
+#####SP Stuff
+
+	rule_text_shadow_top:
+		top: 497
+		left: { 175  + text_adjust() }
+		height: 140
+		width: 450
+		angle: 90
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { get_text_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		font:
+			name: Vera Humana 95 Bold
+			italic name: Vera Humana 95 Italic
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: CardfightVanguard-Outline
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	rule_text_shadow_bottom:
+		top: 499
+		left: { 175  + text_adjust() }
+		height: 140
+		width: 450
+		angle: 90
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { get_text_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		font:
+			name: Vera Humana 95 Bold
+			italic name: Vera Humana 95 Italic
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: CardfightVanguard-Outline
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	rule_text_shadow_left:
+		top: 498
+		left: { 174  + text_adjust() }
+		height: 140
+		width: 450
+		angle: 90
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { get_text_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		font:
+			name: Vera Humana 95 Bold
+			italic name: Vera Humana 95 Italic
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: CardfightVanguard-Outline
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	rule_text_shadow_right:
+		top: 498
+		left: { 176  + text_adjust() }
+		height: 140
+		width: 450
+		angle: 90
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { if rule_lines() == 1 then "bottom center" else "bottom left" }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		font:
+			name: Vera Humana 95 Bold
+			italic name: Vera Humana 95 Italic
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: CardfightVanguard-Outline
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	card_name_shadow_top:
+		top: 417
+		left: 335
+		height: 18
+		width: 286
+		angle: 90
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: 13
+			#weight: bold
+			style: italic
+			color: { get_shadow_color() }
+			
+	card_name_shadow_bottom:
+		top: 419
+		left: 335
+		height: 18
+		width: 286
+		angle: 90
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: 13
+			#weight: bold
+			style: italic
+			color: { get_shadow_color() }
+			
+	card_name_shadow_left:
+		top: 418
+		left: 334
+		height: 18
+		width: 286
+		angle: 90
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: 13
+			#weight: bold
+			style: italic
+			color: { get_shadow_color() }
+			
+	card_name_shadow_right:
+		top: 418
+		left: 336
+		height: 18
+		width: 286
+		angle: 90
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: 13
+			#weight: bold
+			style: italic
+			color: { get_shadow_color() }
+			
+	set_order_type:
+		top: 520
+		left: 227
+		angle: 90
+		height: { if card.order_type == "set" or card.order_type == "g set order" then 10 else 0 }
+		width: { if card.order_type == "set" or card.order_type == "g set order" then 45 else 0 }
+		z index: 6
+		alignment: middle center overflow-shrink
+		font:
+			name: Vera Humana 95 Bold
+			size: 8
+			scale down to: 7
+			color: rgb(255,247,245)
+			shadow color: rgb(56,74,84)
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 1
+			
+			
+######Extra Style Options
+styling field:
+	type: choice
+	name: Borderless
+	description: For frameless cards
+	choice: No
+	choice: Yes
+
+styling field:
+	type: text
+	name: shrink rule text
+	description: Shrinks text by specified pixels. Negative amount grows the text!
+	
+styling field:
+	type: text
+	name: horizontal padding
+	description: Horizontal padding of rule text
+	
+styling field:
+	type: text
+	name: vertical padding
+	description: Vertical padding of rule text
+	
+styling field:
+	type: boolean
+	name: Dont Use Command Classes
+	description: Divide Commands into classes
+	default: "no"
+	
+styling field:
+	type: choice
+	name: Edit Overlay
+	description: Toggles a second image that overlays the base image
+	choice: No
+	choice: Yes
+	
