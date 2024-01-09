@@ -1,0 +1,259 @@
+
+add cards script:
+	name: &VR Cycle
+	description: Adds a grade 3 VR for each clan in the set
+	enabled: { get_era() == "V"}
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					[ new_card([grade_control: "grade3",	clan: ac,	rarity_control: "VanguardRare"]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					[ new_card([grade_control: "grade3",	clan: ac,	rarity_control: "VanguardRare"]) ]
+			else if c == "Great Nations" then
+				for each ac in five_great_nations do
+					[ new_card([grade_control: "grade3",	new_nation_control: ac,	rarity_control: "VanguardRare"]) ]
+			else
+				[ new_card([grade_control: "grade3",	clan: c,	rarity_control: "VanguardRare"]) ]
+			
+add cards script:
+	name: &RRR Cycle
+	description: Adds a grade 2 and grade 1 RRR for each clan in the set
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					for each g in ["grade2","grade1"] do
+						[ new_card([grade_control: g,	clan: ac,	rarity_control: "TripleRare"]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					for each g in ["grade2","grade1"] do
+						[ new_card([grade_control: g,	clan: ac,	rarity_control: "TripleRare"]) ]
+			else if c == "Great Nations" then
+				for each ac in five_great_nations do
+					for each g in ["grade2","grade1"] do
+						[ new_card([grade_control: g,	new_nation_control: ac,	rarity_control: "TripleRare"]) ]
+			else for each g in ["grade2","grade1"] do
+				[ new_card([grade_control: g,	clan: c,	rarity_control: "TripleRare"]) ]
+
+add cards script:
+	name: &RR Cycle
+	description: Adds grades 1-3 RRs for each clan in the set
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					for each g in ["grade3","grade2","grade1"] do
+						[ new_card([grade_control: g,	clan: ac,	rarity_control: "DoubleRare"]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					for each g in ["grade3","grade2","grade1"] do
+						[ new_card([grade_control: g,	clan: ac,	rarity_control: "DoubleRare"]) ]
+			else if c == "Great Nations" then
+				for each ac in five_great_nations do
+					for each g in ["grade3","grade2","grade1"] do
+						[ new_card([grade_control: g,	new_nation_control: ac,	rarity_control: "DoubleRare"]) ]
+			else for each g in ["grade3","grade2","grade1"] do
+				[ new_card([grade_control: g,	clan: c,	rarity_control: "DoubleRare"]) ]
+				
+add cards script:
+	name: &R Slots
+	description: Adds five Rs for each clan in the set, grade-weighted
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					for each g in ["grade3","grade2","grade2","grade1","grade1"] do
+						[ new_card([grade_control: g,	clan: ac,	rarity_control: "Rare"]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					for each g in ["grade3","grade2","grade2","grade1","grade1"] do
+						[ new_card([grade_control: g,	clan: ac,	rarity_control: "Rare"]) ]
+			else if c == "Great Nations" then
+				for each ac in five_great_nations do
+					for each g in ["grade3","grade2","grade2","grade1","grade1"] do
+						[ new_card([grade_control: g,	new_nation_control: ac,	rarity_control: "Rare"]) ]
+			else for each g in ["grade3","grade2","grade2","grade1","grade1"] do
+				[ new_card([grade_control: g,	clan: c,	rarity_control: "Rare"]) ]
+				
+add cards script:
+	name: &Common Slots
+	description: Adds thirteen Commons for each clan in the set, grade-weighted, triggerless
+	script:
+		result := []
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					(
+						[ new_card([grade_control: "grade3",	clan: ac,	rarity_control: "Common"]) ]
+						for each g in ["grade2","grade1"] do
+							for _ from 1 to 6 do
+								[ new_card([grade_control: g,	clan: ac,	rarity_control: "Common"]) ]
+					)
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					(
+						[ new_card([grade_control: "grade3",	clan: ac,	rarity_control: "Common"]) ]
+						for each g in ["grade2","grade1"] do
+							for _ from 1 to 6 do
+								[ new_card([grade_control: g,	clan: ac,	rarity_control: "Common"]) ]
+					)
+			else if c == "Great Nations" then
+				for each ac in five_great_nations do
+					for each ac in all_nations do
+					(
+						[ new_card([grade_control: "grade3",	new_nation_control: ac,	rarity_control: "Common"]) ]
+						for each g in ["grade2","grade1"] do
+							for _ from 1 to 6 do
+								[ new_card([grade_control: g,	new_nation_control: ac,	rarity_control: "Common"]) ]
+					)
+			else
+				(
+					result := result + [ new_card([grade_control: "grade3",	clan: c,	rarity_control: "Common"]) ]
+					for each g in ["grade2","grade1"] do
+						for _ from 1 to 6 do
+							result := result + [ new_card([grade_control: g,	clan: c,	rarity_control: "Common"]) ]
+				)
+			result
+			
+add cards script:
+	name: &Special Rarities
+	description: Duplicates all VRs and RRRs, and gives them each a SVR/SP variant as applicable. Doesn't duplicate art
+	script:
+		for each c in set.cards do
+		(
+			this_rarity := "Dont"
+			if c.rarity_control == "VanguardRare" then this_rarity := "SpecialVanguardRare"
+			else if c.rarity_control == "TripleRare" then this_rarity := set.special_rarity
+			
+			if this_rarity != "Dont" then
+				[ new_card([rarity_control: this_rarity,
+					grade_control: c.grade_control,	gift_control: c.gift_control,	ability_control: c.ability_control,	trigger_control: c.trigger_control,
+					frame_control: c.frame_control, shield_control: c.shield_control
+					rule_text: c.rule_text,	flavor_text: c.flavor_text, power: c.power, shield: c.shield
+					clan: c.clan, nation_control: c.nation_control,	race: c.race, illus_line: c.illus_line]) ]
+		)
+
+#TODO			
+#add cards script:
+#	name: &C+Triggers Cycle
+#	description: Adds thirteen Commons for each clan in the set, grade-weighted, including triggers
+#	script:
+#		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+#			for each g in ["grade3","grade3"]
+
+add cards script:
+	name: &Generation Cycle
+	description: Adds a Stride, GGuard, and trigger for each clan in the set
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					[ new_card([grade_control: "Ggrade4",	clan: ac,	rarity_control: "GenerationRare",	frame_control: "stride"]),
+						new_card([grade_control: "Ggrade4",	clan: ac,	rarity_control: "TripleRare",	frame_control: "gguard"]),
+						new_card([grade_control: "grade0",	clan: ac,	rarity_control: "DoubleRare",	frame_control: "trigger"]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					[ new_card([grade_control: "Ggrade4",	clan: ac,	rarity_control: "GenerationRare",	frame_control: "stride"]),
+						new_card([grade_control: "Ggrade4",	clan: ac,	rarity_control: "TripleRare",	frame_control: "gguard"]),
+						new_card([grade_control: "grade0",	clan: ac,	rarity_control: "DoubleRare",	frame_control: "trigger"]) ]
+			else
+					[ new_card([grade_control: "Ggrade4",	clan: c,	rarity_control: "GenerationRare",	frame_control: "stride"]),
+						new_card([grade_control: "Ggrade4",	clan: c,	rarity_control: "TripleRare",	frame_control: "gguard"]),
+						new_card([grade_control: "grade0",	clan: c,	rarity_control: "DoubleRare",	frame_control: "trigger"]) ]
+						
+add cards script:
+	name: &G1 Cycle
+	description: Adds a grade 3 for each clan in the set
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					[ new_card([grade_control: "grade1", clan: ac]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					[ new_card([grade_control: "grade1", clan: ac]) ]
+			else
+				[ new_card([grade_control: "grade1", clan: c]) ]
+				
+add cards script:
+	name: &G2 Cycle
+	description: Adds a grade 3 for each clan in the set
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					[ new_card([grade_control: "grade2", clan: ac]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					[ new_card([grade_control: "grade2", clan: ac]) ]
+			else
+				[ new_card([grade_control: "grade2", clan: c]) ]
+			
+add cards script:
+	name: &G3 Cycle
+	description: Adds a grade 3 for each clan in the set
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					[ new_card([grade_control: "grade3", clan: ac]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					[ new_card([grade_control: "grade3", clan: ac]) ]
+			else
+				[ new_card([grade_control: "grade3", clan: c]) ]
+				
+add cards script:
+	name: &Trigger Cycle
+	description: Adds a grade 3 for each clan in the set
+	script:
+		for each c in (if set.set_clans != "" then split_text(set.set_clans, match:", ") else [""]) do
+			if c == "All Clans" then
+				for each ac in all_clans do
+					[ new_card([grade_control: "grade0", clan: ac,	frame_control: "trigger"]) ]
+			else if c == "All Nations" then
+				for each ac in all_nations do
+					[ new_card([grade_control: "grade0", clan: ac,	frame_control: "trigger"]) ]
+			else
+				[ new_card([grade_control: "grade0", clan: c,	frame_control: "trigger"]) ]
+				
+add cards script:
+	name: &G Clan Booster
+	description: Generates a G clan booster
+	script:
+		result := []
+		c := split_text(set.set_clans, match: ", ")[0]
+		for _ from 1 to 2 do
+			result := result + [ new_card([grade_control: "grade3",	clan: c,	rarity_control: "Common"]) ]
+		for _ from 1 to 2 do
+			result := result + [ new_card([grade_control: "grade2",	clan: c,	rarity_control: "Common"]) ]
+		for _ from 1 to 4 do
+			result := result + [ new_card([grade_control: "grade1",	clan: c,	rarity_control: "Common"]) ]
+		for _ from 1 to 2 do
+			result := result + [ new_card([grade_control: "grade0",	clan: c,	rarity_control: "Common", rule_text: "<sym>自</sym>:Forerunner"]) ]
+		result := result + [ new_card([grade_control: "grade0",	clan: c,	rarity_control: "Common", trigger_control: "Heal"]) ]
+		for each t in ["Critical","Draw","Stand"] do
+			for _ from 1 to 2 do
+				result := result + [ new_card([grade_control: "grade0",	clan: c,	rarity_control: "Common", trigger_control: t]) ]
+		for _ from 1 to 3 do
+			result := result + [ new_card([grade_control: "Ggrade4",	clan: c,	rarity_control: "Rare", frame_control: "stride"]) ]
+		for _ from 1 to 2 do
+			result := result + [ new_card([grade_control: "grade3",	clan: c,	rarity_control: "Rare"]) ]
+		for _ from 1 to 4 do
+			result := result + [ new_card([grade_control: "grade2",	clan: c,	rarity_control: "Rare"]) ]
+		for _ from 1 to 4 do
+			result := result + [ new_card([grade_control: "grade1",	clan: c,	rarity_control: "Rare"]) ]
+		for _ from 1 to 3 do
+			result := result + [ new_card([grade_control: "grade2",	clan: c,	rarity_control: "DoubleRare"]) ]
+		for _ from 1 to 5 do
+			result := result + [ new_card([grade_control: "grade1",	clan: c,	rarity_control: "DoubleRare"]) ]
+		for _ from 1 to 4 do
+			result := result + [ new_card([grade_control: "Ggrade4",	clan: c,	rarity_control: "TripleRare", frame_control: "stride"]) ]
+		for _ from 1 to 2 do
+			result := result + [ new_card([grade_control: "grade3",	clan: c,	rarity_control: "TripleRare"]) ]
+		for _ from 1 to 2 do
+			result := result + [ new_card([grade_control: "Ggrade4",	clan: c,	rarity_control: "GenerationRare", frame_control: "stride"]) ]
+		result
+

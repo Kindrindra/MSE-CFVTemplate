@@ -1,0 +1,204 @@
+﻿
+############################################################## Magic word lists
+
+word list:
+	name: clansimple
+	word: Cray Elemental
+	word: Royal Paladin
+	word: Oracle Think Tank
+	word: Angel Feather
+	word: Shadow Paladin
+	word: Gold Paladin
+	word: Genesis
+	word: Kagero
+	word: Nubatama
+	word: Tachikaze
+	word: Murakumo
+	word: Narukami
+	word: Nova Grappler
+	word: Dimension Police
+	word: Link Joker
+	word: Spike Brothers
+	word: Dark Irregulars
+	word: Pale Moon
+	word: Gear Chronicle
+	word: Granblue
+	word: Bermuda Triangle
+	word: Aqua Force
+	word: Megacolony
+	word: Great Nature
+	word: Neo Nectar
+	word: Etranger
+	word: BREAKERZ
+	word: TachiVan
+	word: Touken Ranbu
+	word: The Mask Collection
+	word: BanG Dream!
+	word: Union Verse
+
+word list:
+	name: clan
+	word: Cray Elemental
+	word: 
+		name: United Sanctuary
+		word: Royal Paladin
+		word: Oracle Think Tank
+		word: Angel Feather
+		word: Shadow Paladin
+		word: Gold Paladin
+		word: Genesis
+	word:
+		name: Dragon Empire
+		word: Kagero
+		word: Nubatama
+		word: Tachikaze
+		word: Murakumo
+		word: Narukami
+	word:
+		name: Star Gate
+		word: Nova Grappler
+		word: Dimension Police
+		word: Link Joker
+	word:
+		name: Dark Zone
+		word: Spike Brothers
+		word: Dark Irregulars
+		word: Pale Moon
+		word: Gear Chronicle
+	word:
+		name: Magallanica
+		word: Granblue
+		word: Bermuda Triangle
+		word: Aqua Force
+	word:
+		name: Zoo
+		word: Megacolony
+		word: Great Nature
+		word: Neo Nectar
+	word:
+		name: Non-core
+		word: Etranger
+		word: BREAKERZ
+		word: TachiVan
+		word: Touken Ranbu
+		word: The Mask Collection
+		word: BanG Dream!
+		word: Union Verse
+
+
+word list:
+	name: race
+	word:
+		name: A-C
+		word: Abyss Dragon
+		word: Alien
+		word: Angel
+		word: Angelroid
+		word: Astral Deity
+		word: Astral Poet
+		word: Aquaroid
+		word: Battleroid
+		word: Bioroid
+		word: Chimera
+		word: Chrono Dragon
+		word: Cosmo Dragon
+		word: Cyber Beast
+		word: Cyber Dragon
+		word: Cyber Fairy
+		word: Cyber Golem
+		word: Cyberoid
+	word:
+		name: D-F
+		word: Dark Elf
+		word: Demon
+		word: Dinodragon
+		word: Dragonroid
+		word: Dragonman
+		word: Dryad
+		word: Elf
+		word: Elemental
+		word: Flame Dragon
+		word: Forest Dragon
+	word:
+		name: G
+		word: Gear Beast
+		word: Gear Colossus
+		word: Gear Dragon
+		word: Gearoid
+		word: Ghost
+		word: Giant
+		word: Gillman
+		word: Gnome
+		word: Goblin
+		word: Golem
+		word: Gyze
+	word:
+		name: H-N
+		word: High Beast
+		word: Human
+		word: Insect
+		word: Kraken
+		word: Mermaid
+		word: Messiah
+		word: Noble
+	word:
+		name: O-T
+		word: Ogre
+		word: Royal Beast
+		word: Salamander
+		word: Shadow Dragon
+		word: Skeleton
+		word: Space Dragon
+		word: Succubus
+		word: Sylph
+		word: Tear Dragon
+		word: Thunder Dragon
+	word:
+		name: V-Z
+		word: Vampire
+		word: Warbeast
+		word: Wild Dragon
+		word: Winged Dragon
+		word: Workeroid
+		word: Zeroth Dragon
+		word: Zodiac Time Beast
+		word: Zombie
+	word:
+		name: Non-core
+		word: Image Character
+		word: Marine Self-Defense Force
+		word: Salmon Fillet
+		word: Touken Danshi - Tantou
+		word: Touken Danshi - Wakizashi
+		word: Touken Danshi - Uchigatana
+		word: Touken Danshi - Tachi
+		word: Touken Danshi - Ootachi
+		word: Touken Danshi - Yari
+		word: Touken Danshi - Naginata
+		word: Afterglow
+		word: Hello, Happy World!
+		word: Pastel＊Palettes
+		word: Poppin’ Party
+		word: RAISE A SUILEN
+		word: Roselia
+		
+word list:
+	name: nation
+	word: Cray Elemental
+	word: 
+		name: Original Era
+		word: Dark Zone
+		word: Dragon Empire
+		word: Magallanica
+		word: Star Gate
+		word: United Sanctuary
+		word: Zoo
+	word:
+		name: Chakrabarthi Divine Era
+		word: Brandt Gate
+		word: Dark States
+		word: Dragon Empire
+		word: Keter Sanctuary
+		word: Stoicheia
+		word: Lyrical Monastario
+			

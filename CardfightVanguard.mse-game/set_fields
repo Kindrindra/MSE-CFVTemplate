@@ -1,0 +1,82 @@
+
+############# Set fields #############
+
+set field:
+	type: info
+	name: Set Information
+set field:
+	type: text
+	name: set name
+	identifying: true
+set field:
+	type: text
+	name: description
+	multi line: true
+set field:
+	type: text
+	name: set clans
+	description: Name the clans featured in this set, separated with a ",", ie "Neo Nectar, Angel Feather, Pale Moon"
+set field:
+	type: text
+	name: set code
+	description: Card's identifying code, ie "V-EB01"
+set field:
+	type: text
+	name: set region
+	description: Region code, ie "EN"
+set field:
+	type: text
+	name: designer
+	description: You! When exporting to the wiki, puts this into the creator field on all cards in the set~
+set field:
+	type: choice
+	name: special rarity
+	choice: SpecialParallel
+	choice: OriginRare
+set field:
+	type: choice
+	name: italic font
+	choice: Vera Humana 95 Italic
+	choice: Vera Humana 95 Underlined Bold
+set field:
+	type: info
+	name: Defaults and Automation
+set field:
+	type: multiple choice
+	name: automatic reminder text
+	choice: core
+	choice: unique
+	choice: symbol
+	choice: pseudo
+	choice: action
+	choice: custom
+	choice: lower case
+	initial: core, unique, symbol, pseudo, action, custom
+	# Convert from older mse versions
+	script:
+		if value == "yes" then "core, pseudo, action, custom"
+		else if value == "no" then ""
+		else value
+	description: For which kinds of keywords should reminder text be added by default? Note: you can enable/disable reminder text by right clicking the keyword.
+set field:
+	type: choice
+	name: card language
+	description: Language for the cards
+	choice: English
+	initial: English
+	#TODO: More languages may be added in updates
+set field:
+	type: boolean
+	name: mark errors
+	description: Marks errors on cards, for example wording and spelling errors, non unique card names, etc.
+set field:
+	type: choice
+	name: set era
+	description: Determines default power, shield, etc
+	choice: None
+	choice: V - Gift
+	choice: G - Stride
+	choice: D - overDress
+	initial:  None
+	#V - Reboot
+	

@@ -1,0 +1,375 @@
+﻿
+############################################################## We have keywords
+
+has keywords: true
+
+############################################################## Keyword mode
+
+keyword mode:
+	name: old
+	description: Old keywords (Generation Break, Lord, Restraint)
+keyword mode:
+	name: core
+	description: Core set keywords (Legion, Lock, Delete, etc.)
+keyword mode:
+	name: expert
+	description: Expert set keywords (Delete + Vanish Delete)
+keyword mode:
+	name: fanmade
+	description: Fanmade keywords (Rampage, etc)
+keyword mode:
+	is default: true
+	name: custom
+	description: Custom keywords
+
+############################################################## Keyword parameter types
+
+# By pichoro and bunnierein
+keyword parameter type:
+	name: cost
+	match: [ ][HSCTQXYZI0-9WUBRG/|]*|[-—][^(\n]*
+	separator before is: [ —-]
+	separator after is: [.]
+	optional: false
+	# note: the separator is part of match
+	refer script:
+		name: normal
+		description: When using mana only costs, doesn't include anything extra in the reminder text
+		script: \{{input}\}
+	refer script:
+		name: add "pay an additional " for mana costs
+		description: When using mana only costs, words the reminder text as "pay an additional <cost>"
+		script: \{for_mana_costs(add:"pay an additional ", {input})\}
+	refer script:
+		name: add "pay " for mana costs
+		description: When using mana only costs, words the reminder text as "pay <cost>"
+		script: \{for_mana_costs(add:"pay ", {input})\}
+	separator script: long_dash()
+
+keyword parameter type:
+	name: number
+	match: [XYZ0-9]+
+	refer script:
+		name: normal
+		description: (1,2,3)
+		script: \{{input}\}
+	refer script:
+		name: as words
+		description: (one, two, three)
+		script: \{english_number({input})\}
+	refer script:
+		name: as words, use "a" for 1
+		description: (a, two, three)
+		script: \{english_number_a({input})\}
+	refer script:
+		name: as words, use "" for 1
+		description: (, two, three)
+		script: \{english_number_multiple({input})\}
+	refer script:
+		name: as ordinal words
+		description: (first, second, third)
+		script: \{english_number_ordinal({input})\}
+
+keyword parameter type:
+	name: action
+	match: [^(:\n]+
+	separator after is: [.]
+	reminder script: alternative_cost()
+
+keyword parameter type:
+	name: one_word
+	match: [A-Za-z0-9]+
+
+keyword parameter type:
+	name: name
+	match: [^(.:;\n—]+
+	refer script:
+		name: normal
+		description: No changes made.
+		script: \{{input}\}
+	refer script:
+		name: singular
+		description: Removes plurality from words.
+		script: \{english_singular({input})\}
+	refer script:
+		name: separate words with "and/or"
+		description: Changes spaces to " and/or ". "Elf Warrior" becomes "Elf and/or Warrior".
+		script: \{separate_words(spacer: " and/or ", {input})\}
+	refer script:
+		name: separate words with "or"
+		description: Changes spaces to " or ". "Elf Warrior" becomes "Elf or Warrior".
+		script: \{separate_words(spacer: " or ", {input})\}
+
+keyword parameter type:
+	name: prefix
+	description: Prefix for things like "<something>walk"
+	optional: false
+#	match: [A-Z][a-z, ]*([A-Z][a-z, ]*\xEB00) # commented out because it stopped prefix param from working, version below allows all "walks", including "Dame Judi Denchwalk", doesn't trigger #in middle of sentences, and doesn't trigger in chains of keywords.
+	match: [A-Z][A-Z,a-z’ ]*
+	example: Forest
+keyword parameter type:
+	name: english_number
+	match: [ upto]*[(an? |one |two |three |four |five |six |seven |eight |nine |ten )]*
+
+keyword parameter type:
+	name: a
+	match: [an?]*
+
+############################# All Vanguard keywords
+
+keyword:
+	keyword: Legion 20k
+	match: L/20kG "<atom-param>name</atom-param>"
+	mode: core
+	reminder: <i-auto>If your opponent’s vanguard is grade 3 or higher, this unit may return four cards from your drop zone into your deck once, search your deck for the specified card, and Legion</i-auto>
+keyword:
+	keyword: Legion 21k
+	match: L/21kG "<atom-param>name</atom-param>"
+	mode: core
+	reminder: <i-auto>If your opponent’s vanguard is grade 3 or higher, this unit may return four cards from your drop zone into your deck once, search your deck for the specified card, and Legion</i-auto>
+keyword:
+	keyword: Legion 22k
+	match: L/22kG "<atom-param>name</atom-param>"
+	mode: core
+	reminder: <i-auto>If your opponent’s vanguard is grade 3 or higher, this unit may return four cards from your drop zone into your deck once, search your deck for the specified card, and Legion</i-auto>
+keyword:
+	keyword: Lock
+	match: lock it.
+	mode: core
+	reminder: <i-auto>The locked card is turned face-down, and cannot do anything. It turns face-up at end of the owner’s turn.</i-auto>
+keyword:
+	keyword: Time Leap
+	match: time leap it.
+	mode: core
+	reminder: <i-auto>Bind it, call a grade +1 card from your deck, and shuffle your deck. At the end of the turn, put the called unit on the bottom of your deck, and call the bound card.</i-auto>
+keyword:
+	keyword: Vanish Delete
+	match: and binds it face down.
+	mode: core
+	reminder: <i-auto>Vanish Delete.</i-auto>
+keyword:
+	keyword: Delete
+	match: Delete <atom-param>name</atom-param>.
+	mode: core
+	reminder: <i-auto>The deleted unit is turned face down, its power becomes 0 and it loses all text. It turns face-up at end of the owner's turn.</i-auto>
+keyword:
+	keyword: Delete + Vanish Delete
+	match: Delete <atom-param>name</atom-param>, and binds it face down.</i-auto>
+	mode: custom
+	reminder: <i-auto>Vanish Delete.) (The deleted unit is turned face down, its power becomes 0 and it loses all text. It turns face-up at end of the owner's turn.</i-auto>
+keyword:
+	keyword: Lord
+	match: Lord 
+	mode: old
+	reminder: <i-auto>If you have a unit without a same clan as this unit, this unit cannot attack</i-auto>
+keyword:
+	keyword: Limit Break 4
+	match: L/B4
+	mode: old
+	reminder: <i-auto>This ability is active if you have four or more damage</i-auto>
+keyword:
+	keyword: Limit Break 5
+	match: L/B5
+	mode: old
+	reminder: <i-auto>This ability is active if you have five or more damage</i-auto>
+keyword:
+	keyword: Generation Break 1
+	match: Ⅰ
+	mode: old
+	reminder: <i-auto>This ability is active if you have one or more face up G units in total on your<sym>V</sym>or G zone</i-auto>
+keyword:
+	keyword: Generation Break 2
+	match: Ⅱ
+	mode: old
+	reminder: <i-auto>This ability is active if you have two or more face up G units in total on your<sym>V</sym>or G zone</i-auto>
+keyword:
+	keyword: Generation Break 3
+	match: Ⅲ
+	mode: old
+	reminder: <i-auto>This ability is active if you have three or more face up G units in total on your<sym>V</sym>or G zone</i-auto>
+keyword:
+	keyword: Forerunner
+	match: 自:Forerunner
+	mode: old
+	reminder: <i-auto>When a unit of the same clan rides this unit, you may call this unit to<sym>R</sym></i-auto>
+keyword:
+	keyword: Stride
+	match: 超
+	mode: old
+	reminder: <i-auto>Released when both players' vanguards are grade 3 or greater!</i-auto>
+keyword:
+	keyword: G-Guardian
+	match: 放
+	mode: core
+	reminder: <i-auto>Usable when both fighter's vanguards are grade 3 or greater, and the number of face up G guardians in your G zone is three or less</i-auto>
+keyword:
+	keyword: Sentinel
+	match: 永:Sentinel
+	mode: core
+	reminder: <i-auto>You may only have up to four cards with "<sym>永</sym>:Sentinel" in a deck.</i-auto>
+keyword:
+	keyword: Resist
+	match: ]:Resist
+	mode: core
+	reminder: <i-auto>This unit cannot be chosen by the effects of your opponent's cards</i-auto>
+keyword:
+	keyword: Restraint
+	match: ]:Restraint
+	mode: old
+	reminder: <i-auto>This unit cannot attack</i-auto>
+keyword:
+	keyword: Darkness
+	match: Darkness
+	mode: core
+	reminder: <i-auto>This ability is active if cards have been put into your soul during this turn</i-auto>
+keyword:
+	keyword: Brave
+	match: Brave
+	mode: core
+	reminder: <i-auto>This ability is active when you have three or less cards in your hand</i-auto>
+keyword:
+	keyword: Hollow
+	match: Hollow
+	mode: core
+	reminder: <sep><i-auto>When this unit is placed on <sym>RC</sym>, you may have it become hollowed. If you do, retire it at the end of the turn</i-auto></sep>
+keyword:
+	keyword: Oracle
+	match: Oracle
+	mode: core
+	reminder: <i-auto>This ability is active when you have five or more cards in your hand</i-auto>
+keyword:
+	keyword: Afterimage
+	match: Afterimage
+	mode: core
+	reminder: <i-auto>When your opponent puts a bound card into his or her hand, if you hand has six or less cards, you may return this unit to your hand</i-auto>
+keyword:
+	keyword: Blaze
+	match: Blaze
+	mode: core
+	reminder: <i-auto>At the beginning of each of your attacks, if you have more rear-guards than your opponent, your vanguard becomes blazing until end of turn</i-auto>
+keyword:
+	keyword: Charge
+	match: :Charge
+	mode: core
+	reminder: <i-auto>When this unit is placed on <sym>RC</sym> due to an effect, you may have it become charging for that turn. If you do, place it on the bottom of your deck at the end of its battle</i-auto>
+keyword:
+	keyword: Dark Device
+	match: Dark Device
+	mode: core
+	reminder: <i-auto>Active when your opponent has no <sym>STAND</sym> units in the same column as this unit</i-auto>
+keyword:
+	keyword: Engorge
+	match: Engorge
+	mode: core
+	reminder: <i-auto>When this unit attacks, you may retire one or more of your other units. If you do, it is engorged until end of turn</i-auto>
+keyword:
+	keyword: Harmony
+	match: Harmony
+	mode: Core
+	reminder: <i-auto>When your other unit is placed in the same column as this unit, both units become in harmony until end of turn</i-auto>
+keyword:
+	keyword: Ritual
+	match: Ritual <atom-param>number</atom-param>
+	mode: Core
+	reminder: <i-auto>This ability is active if you have {english_number(param1)} or more Grade 1 cards in your drop zone</i-auto>
+keyword:
+	keyword: Revelation
+	match: Revelation-<atom-param>name</atom-param>
+	mode: Core
+	reminder: <i-auto>When this card is placed on the specified circle, look at the top card of your deck, and you may put that card into your soul. If you do, <sym>REST</sym> one of your rear-guards</i-auto>
+keyword:
+	keyword: Success
+	match: Success <atom-param>number</atom-param>
+	mode: Core
+	reminder: <i-auto>When your rear-guard's <sym>POW</sym> becomes {param1} or greater, this unit becomes successful until end of turn</i-auto>
+keyword:
+	keyword: Thunderstrike
+	match: Thunderstrike <atom-param>number</atom-param>
+	mode: Core
+	reminder: <i-auto>This ability is active when your opponent's bind zone has {english_number(param1)} or more cards</i-auto>
+keyword:
+	keyword: Unite
+	match: Unite
+	mode: Core
+	reminder: <i-auto>This ability is active if you have called two or more units to <sym>RC</sym> or <sym>GC</sym> during this turn</i-auto>
+keyword:
+	keyword: Wave
+	match: Wave <atom-param>name</atom-param>
+	mode: Core
+	reminder: <i-auto>This ability is active during the specified battles of each turn</i-auto>
+keyword:
+	keyword: Homare
+	match: Homare
+	mode: Core
+	reminder: <i-auto>You can only pay the cost for one Homare ability per turn</i-auto>
+keyword:
+	keyword: Shinken Hissatsu
+	match: Shinken Hissatsu
+	mode: Core
+	reminder: <i-auto>This ability is active if you have three or more damage</i-auto>
+keyword:
+	keyword: Plant Token
+	match: plant token<atom-param>name</atom-param>.
+	mode: Core
+	reminder: <i-auto>Plant tokens are grade 0/<sym>剣</sym>5000/<sym>星</sym>1 and have boost</i-auto>
+keyword:
+	keyword: overDress
+	match: 服<atom-param>name</atom-param>
+	mode: Core
+	reminder: You may place it by stacking it on the specified unit instead of normal calling it to <sym>R</sym>
+keyword:
+	keyword: Play Effect
+	match: Play Effect
+	mode: Core
+	reminder: If played as an order, activate this!
+keyword:
+	keyword: Alchemagic
+	match: Alchemagic.
+	mode: Core
+	reminder: <i-auto>Combine the costs, and add the effect to the back!</i-auto>
+keyword:
+	keyword: Glitter
+	match: 輝
+	mode: Core
+	reminder: <i-auto>This card is a <sym>輝</sym> that seeks the Fire Regalis<i-auto>
+	
+	
+	
+################ Fanmade Keywords
+
+keyword:
+	keyword: Royal Flush
+	match: AJKQ
+	mode: fanmade
+	reminder: <i-auto>Reveal the top five cards of your deck, shuffle your deck</i-auto>
+keyword:
+	keyword: Mischief
+	match: Mischief
+	mode: fanmade
+	reminder: <i-auto>This ability is active if your opponent's unit has moved this turn</i-auto>
+keyword:
+	keyword: Nemesis
+	match: <atom-param>name</atom-param>相
+	mode: fanmade
+	reminder: <i-auto>Active if your opponent's vanguard is grade 3 or greater</i-auto>
+keyword:
+	keyword: Overstride
+	match: <atom-param>name</atom-param>Overstride <atom-param>number</atom-param>
+	mode: fanmade
+	reminder: <i-auto>Active if you discarded {english_number_a(param2)} or more cards for the cost of<sym>stride</sym>this turn.</i-auto>
+keyword:
+	keyword: Peacekeeper
+	match: 永:Peacekeeper
+	mode: fanmade
+	reminder: <i-auto>If you have no face up G units on your<sym>G</sym>or G zone, you may regard any card as having "<sym>治</sym>Heal" for the cost of calling this card.</i-auto>
+keyword:
+	keyword: Impact
+	match: :Impact
+	mode: fanmade
+	reminder: <i-auto>When your opponent calls guardians from his or her hand during the battle this unit attacked, he or she must call two or more at the same time.<i-auto>
+keyword:
+	keyword: Command
+	match: 命
+	mode: fanmade
+	reminder: <i-auto>Active if all fighters' vanguards' grades are greater than or equal to this!</i-auto>
+	

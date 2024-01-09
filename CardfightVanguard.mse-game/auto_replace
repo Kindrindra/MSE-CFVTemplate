@@ -1,0 +1,176 @@
+﻿
+############################################################## Auto replace
+
+# Do we need categories?
+#auto replace category: text box
+#auto replace category: copyright
+#auto replace category: everywhere
+
+#Costs
+auto replace:
+	match: COST
+	replace: <sym>払</sym>
+	
+#shortcuts
+auto replace:
+	match: ETB
+	replace: When placed
+auto replace:
+	match: CIP
+	replace: When placed
+auto replace:
+	match: On-Place
+	replace: When placed
+auto replace:
+	match: EOT
+	replace: until end of turn
+auto replace:
+	match: ONATK
+	replace: When it attacks
+auto replace:
+	match: ONV
+	replace: <sym>自</sym>:When placed on<sym>先</sym>
+auto replace:
+	match: ONR
+	replace: <sym>自</sym>:When placed on<sym>友</sym>
+auto replace:
+	match: ONG
+	replace: <sym>自</sym>:When put on<sym>助</sym>
+auto replace:
+	match: On-Intercept
+	replace: When it intercepts
+auto replace:
+	match: Stride!
+	replace: STRIDEPROC
+auto replace:
+	match: G-Guard!
+	replace: GGUARDPROC
+auto replace:
+	match: Command!
+	replace: COMMANDPROC
+auto replace:
+	match: Gift!
+	replace: GIFTNAME
+auto replace:
+	match: Nemain!
+	replace: HOPT
+auto replace:
+	match: Starter
+	replace: <sym>自</sym>:When this unit is rode upon, if you went second, draw a card.
+	
+	
+#Symbols
+auto replace:
+	match: (V)
+	replace: <sym>右V左</sym>
+	whole word: false
+auto replace:
+	match: (R)
+	replace: <sym>右R左</sym>
+	whole word: false
+auto replace:
+	match: (G)
+	replace: <sym>右G左</sym>
+	whole word: false
+auto replace:
+	match: [Power]
+	replace: POW
+	whole word: false
+auto replace:
+	match: [Shield]
+	replace: SLD
+	whole word: false
+auto replace:
+	match: AUTO
+	replace: <sym>自</sym>
+	whole word: false
+auto replace:
+	match: CONT
+	replace: <sym>永</sym>
+	whole word: false
+auto replace:
+	match: ACT
+	replace: <sym>起</sym>
+	whole word: false
+auto replace:
+	match: STAND
+	replace: <sym>S</sym>
+	whole word: false
+auto replace:
+	match: [Accel]
+	replace: <sym>速</sym>
+	whole word: false
+auto replace:
+	match: [Protect]
+	replace: <sym>守</sym>
+	whole word: false
+auto replace:
+	match: [Force]
+	replace: <sym>力</sym>
+	whole word: false
+auto replace:
+	match: [Stand]
+	replace: <sym>醒</sym>
+	whole word: false
+auto replace:
+	match: [Draw]
+	replace: <sym>引</sym>
+	whole word: false
+auto replace:
+	match: [Front]
+	replace: <sym>前</sym>
+	whole word: false
+auto replace:
+	match: [Critical]
+	replace: <sym>★</sym>
+	whole word: false
+auto replace:
+	match: [Heal]
+	replace: <sym>治</sym>
+	whole word: false
+auto replace:
+	match: [Over]
+	replace: <sym>超</sym>
+	whole word: false
+
+
+#Punctuation
+auto replace:
+	match: ((
+	replace: <sym>右</sym>
+auto replace:
+	match: ))
+	replace: <sym>左</sym>
+auto replace:
+	match: //
+	replace: <sym>/</sym>
+auto replace:
+	match: -- 
+	replace: ● 
+auto replace:
+	match: <<
+	replace: <sym>開</sym>
+auto replace:
+	match: >>
+	replace: <sym>閉</sym>
+	
+#Colors
+#auto replace:
+#	match: {
+#	replace: <color:rgb(255,0,0)>
+#auto replace:
+#	match: }
+#	replace: </color>
+
+#Spellcheck
+auto replace:
+	match: order card
+	replace: Order card
+	
+
+
+#
+#Coding
+#auto replace:
+#	match: CELSEP
+#	replace: {if has_pt() then this creature else this permanent}

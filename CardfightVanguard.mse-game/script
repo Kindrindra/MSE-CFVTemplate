@@ -1,0 +1,1146 @@
+﻿
+include file: sort_order
+include file: language
+
+	ceil :=
+	{
+		if input > to_int(input) then to_int(input) +1
+		else input
+	}
+	
+	get_default_ability := {
+		if card.card_frame == "order" then "none"
+		else if card.card_grade == "grade0" then "boost"
+		else if card.card_grade == "grade1" then "boost"
+		else if card.card_grade == "grade2" then "intercept"
+		else if card.card_grade == "grade3" then "twindrive"
+		else if card.card_frame == "gguard" then "none"
+		else if card.card_grade == "Ggrade4" then "tripledrive"
+		else if card.card_grade == "grade4" then "tripledrive"
+		else "none"
+		}
+		
+	get_default_shield_G := {
+		if card.card_frame == "gguard" then "GGuard"
+		else if grade_to_number() >= 3 or card.card_grade == "NoGrade" then "none"
+		else if card.trigger_control == "Draw" then "5000"
+		else if card.card_grade == "grade0" then "10000"
+		else "5000"
+	}
+	
+	get_default_shield_D := {
+		if card.card_frame == "gguard" then "GGuard"
+		else if grade_to_number() >= 3 or card.card_grade == "NoGrade" then "none"
+		else if card.trigger_control == "Draw" then "5000"
+		else if card.trigger_control == "Over" then "50000"
+		else if card.trigger_control != "none" then "15000"
+		else "5000"
+	}
+		
+	get_default_shield := {
+		if card.card_frame == "order" then "none"
+		else if card.card_frame == "token" then "none"
+		else if get_era() == "D" then get_default_shield_D()
+		else if get_era() == "G" then get_default_shield_G()
+		else if card.card_grade == "grade2" then "5000"
+		else if card.card_grade == "grade1" then "10000"
+		else if card.card_trigger == "Heal" then
+			if card.card_grade == "grade3" then "15000"
+			else "20000"
+		else if card.card_frame == "trigger" then "15000"
+		else if card.card_grade == "grade0" then "10000"
+		else if card.card_frame == "gguard" then "GGuard"
+		else "none"
+		}
+		
+	get_gift_type := {
+		myClan := remove_tags(input: card.clan)
+		if myClan == "Aqua Force" then "Accel"
+		else if myClan == "Gold Paladin" then "Accel"
+		else if myClan == "Great Nature" then "Accel"
+		else if myClan == "Murakumo" then "Accel"
+		else if myClan == "Narukami" then "Accel"
+		else if myClan == "Nova Grappler" then "Accel"
+		else if myClan == "Pale Moon" then "Accel"
+		else if myClan == "Tachikaze" then "Accel"
+		else if myClan == "Bermuda Triangle" then "Force"
+		else if myClan == "Dimension Police" then "Force"
+		else if myClan == "Gear Chronicle" then "Force"
+		else if myClan == "Genesis" then "Force"
+		else if myClan == "Kagero" then "Force"
+		else if myClan == "Link Joker" then "Force"
+		else if myClan == "Neo Nectar" then "Force"
+		else if myClan == "Royal Paladin" then "Force"
+		else if myClan == "Shadow Paladin" then "Force"
+		else if myClan == "Spike Brothers" then "Force"
+		else if myClan == "Angel Feather" then "Protect"
+		else if myClan == "Dark Irregulars" then "Protect"
+		else if myClan == "Granblue" then "Protect"
+		else if myClan == "Megacolony" then "Protect"
+		else if myClan == "Nubatama" then "Protect"
+		else if myClan == "Oracle Think Tank" then "Protect"
+		
+		else if myClan == "BanG Dream!" then "Force"
+		else if myClan == "Aether Crescent" then "Protect"
+		else if myClan == "Desperados" then "Protect"
+		else card.card_gift
+		}
+		
+	get_default_gift := {
+		if is_unit() and get_era() == "V" and card.card_grade == "grade3" and card.card_shield == "none"  then get_gift_type()
+		else if is_unit() and get_era() == "D" and card.card_grade == "grade3" then "PersonaRide"
+		else "none"
+		}
+		
+	get_default_power_G:= {
+		if card.card_grade == "grade0" then
+			if card.card_frame == "trigger" then
+				if card.rule_text == "" then "5000 "
+				else "4000 "
+			else if card.rule_text == "" then "6000 "
+			else "5000 "
+		else if card.card_grade == "grade1" then 
+			if card.rule_text == "" then "8000 "
+			else "7000 "
+		else if card.card_grade == "grade2" then
+			if card.rule_text == "" then "10000 "
+			else "9000 "
+		else if card.card_grade == "grade3" then "11000 "
+		else if card.card_grade == "Ggrade4" then "15000+ "
+		else ""
+	}
+	
+	get_default_power_D:= {
+		if card.card_grade == "grade0" then
+			if card.card_frame == "trigger" then
+				if card.rule_text == "" or card.card_trigger == "Over" then "5000 "
+				else "4000 "
+			else "6000 "
+		else if card.card_grade == "grade1" then "8000 "
+		else if card.card_grade == "grade2" then "10000 "
+		else if card.card_grade == "Ggrade4" then "15000+ "
+		else if grade_to_number() >= 3 then "13000 "
+		else ""
+	}
+		
+	get_default_power := {
+		if get_era() == "D" then get_default_power_D()
+		else if get_era() == "G" then get_default_power_G()
+		else if is_order() then ""
+		else if card.card_grade == "grade0" then
+			if card.card_frame == "trigger" then
+				if card.rule_text == "" then "5000 "
+				else "4000 "
+			else "6000 "
+		else if card.card_grade == "grade1" then "8000 "
+		else if card.card_grade == "grade2" then
+			if get_gift_type() == "Force" then "10000 "
+			else "9000 "
+		else if card.card_grade == "grade3" then
+			if get_gift_type() == "Force" then "13000 "
+			else "12000 "
+		else if card.card_grade == "grade4" then
+			if card.card_gift == "none" then "15000 "
+			else if get_gift_type() == "Force" then "14000 "
+			else "13000 "
+		else if card.card_frame == "gguard" then ""
+		else if card.card_grade == "Ggrade4" then "15000+ "
+		else if card.card_frame == "order" then ""
+		else if card.card_grade == "grade5" then "70000 "
+		else "6000 "
+		}
+		
+	get_default_grade := {
+		if card.card_frame == "stride" or card.card_frame == "gguard" then "Ggrade4"
+		else "grade0"
+	}
+	
+	get_default_frame := {
+		if card.card_grade == "Ggrade4" then "stride"
+		else if card.trigger_control != "none" then "trigger"
+		else if card.order_type == "g order" then "stride"
+		else if card.order_type == "g blitz order" then "gguard"
+		else "normal"
+	}
+	
+	get_default_order_type := {
+		if card.card_frame == "normal" then "normal unit"
+		else if card.card_frame == "trigger" then "trigger unit"
+		else if card.card_frame == "triggerOrder" or card.trigger_control != "none" then "trigger"
+		else if card.card_frame == "stride"then "g order"
+		else if card.card_frame == "gguard" then "g blitz order"
+		else "normal order"
+	}
+	
+	get_default_rule_text := {
+		if contains(card.set_order_type, match: "SET ORDER") then "<i-auto>(After a Set Order is played, put it into your Order Zone.)</i-auto>"
+		else if card.card_trigger == "Over" and is_unit() then "overRemind"
+		else ""
+	}
+	
+	get_default_secondary_text := {
+		if card.card_gift == "Force" or card.card_gift == "Accel" or card.card_gift == "Protect" then "<i-auto>(If you ride this unit, you get one Imaginary Gift:" + get_gift_type() + "!)</i-auto>"
+		else if card.card_trigger == "Over" and is_order() then "overRemind"
+		else ""
+	}
+		
+	all_clans := ["Royal Paladin","Oracle Think Tank","Angel Feather","Shadow Paladin","Gold Paladin","Genesis","Kagero","Nubatama","Narukami","Tachikaze",
+		"Murakumo","Nova Grappler","Dimension Police","Link Joker","Spike Brothers","Dark Irregulars","Pale Moon","Gear Chronicle","Granblue","Bermuda Triangle",
+		"Aqua Force","Megacolony","Great Nature","Neo Nectar"]
+		
+	all_nations := ["United Sanctuary","Dragon Empire","Star Gate","Dark Zone","Magallanica","Zoo"]
+	
+	five_great_nations := ["Keter Sanctuary","Dragon Empire","Brandt Gate","Dark States","Stoicheia"]
+		
+	get_default_nation := {
+		myClan := remove_tags(input: card.clan)
+		if myClan == "Royal Paladin" then "United Sanctuary"
+		else if myClan == "Oracle Think Tank" then "United Sanctuary"
+		else if myClan == "Angel Feather" then "United Sanctuary"
+		else if myClan == "Shadow Paladin" then "United Sanctuary"
+		else if myClan == "Gold Paladin" then "United Sanctuary"
+		else if myClan == "Genesis" then "United Sanctuary"
+		else if myClan == "Kagero" then "Dragon Empire"
+		else if myClan == "Nubatama" then "Dragon Empire"
+		else if myClan == "Narukami" then "Dragon Empire"
+		else if myClan == "Tachikaze" then "Dragon Empire"
+		else if myClan == "Murakumo" then "Dragon Empire"
+		else if myClan == "Nova Grappler" then "Star Gate"
+		else if myClan == "Dimension Police" then "Star Gate"
+		else if myClan == "Link Joker" then "Star Gate"
+		else if myClan == "Spike Brothers" then "Dark Zone"
+		else if myClan == "Dark Irregulars" then "Dark Zone"
+		else if myClan == "Pale Moon" then "Dark Zone"
+		else if myClan == "Gear Chronicle" then "Dark Zone"
+		else if myClan == "Granblue" then "Magallanica"
+		else if myClan == "Bermuda Triangle" then "Magallanica"
+		else if myClan == "Aqua Force" then "Magallanica"
+		else if myClan == "Megacolony" then "Zoo"
+		else if myClan == "Great Nature" then "Zoo"
+		else if myClan == "Neo Nectar" then "Zoo"
+		else if myClan == "United Sanctuary" then "United Sanctuary"
+		else if myClan == "Dragon Empire" then "Dragon Empire"
+		else if myClan == "Star Gate" then "Star Gate"
+		else if myClan == "Dark Zone" then "Dark Zone"
+		else if myClan == "Magallanica" then "Magallanica"
+		else if myClan == "Zoo" then "Zoo"
+		else if myClan == "The Mask Collection" then "Star Gate"
+		else if myClan == "Union Verse" then "Star Gate"
+		else if myClan == "Etranger" then "Star Gate"
+		else if myClan == "Aether Crescent" then "Magallanica"
+		else if myClan == "Desperados" then "Dragon Empire"
+		else if is_frameless() then "none"
+		else if myClan == "BanG Dream!" then "Cray Elemental"
+		else "Cray Elemental"
+		}
+		
+	
+		
+	grade_to_number := {
+		if card.card_grade == "grade1" then 1
+		else if card.card_grade == "grade2" then 2
+		else if card.card_grade == "grade3" then 3
+		else if card.card_grade == "grade4" or card.card_grade == "Ggrade4" then 4
+		else if card.card_grade == "grade5" then 5
+		else if card.card_grade == "grade10" then 10
+		else 0
+	}
+		
+	shield_to_number := {
+		if card.card_shield == "GGuard" then "15000"
+		else if card.card_shield == "none" then ""
+		else if card.card_shield == "PerfectGuard" then "0"
+		else if is_custom_shield() then "0"
+		else card.card_shield
+		}
+		
+	number_to_symbol := {
+		if input=="1" then "➀"
+		else if input=="2" then "➁"
+		else if input=="3" then "➂"
+		else if input=="4" then "④"
+		else if input=="5" then "⑤"
+		else ""
+	}
+	
+	is_sentinel := {
+		if card.card_shield == "PerfectGuard" or card.card_shield == "CustomSentinel" then "true"
+		else "false"
+	}
+	
+	is_trigger := { card.trigger_control != "none" }
+	
+	
+	is_g := { 
+		if card.card_frame == "stride" then true
+		else if card.card_frame == "gguard" then true
+		else false
+	}
+	
+	has_power := { not (is_order() or card.card_frame == "gguard") }
+	has_shield := { not (is_order() or (card.card_shield == "none")) }
+		
+	is_custom_shield :={
+		if card.card_shield == "CustomShield" or card.card_shield == "CustomSentinel" then "true"
+		else "false"
+	}
+	
+	is_great_nation_card := { card.new_nation_control != "none" }
+	
+	has_custom_namebar := { 
+		nation := get_nation()
+		nation == "MonsterStrike" or nation == "ShamanKing"
+	}
+	
+	get_nation := {
+		if not is_great_nation_card() then
+			if card.card_nation == "none" then "CrayElemental"
+			else filter_text(remove_tags(card.card_nation), match: "[a-zA-Z]")
+		else filter_text(remove_tags(card.new_nation_control), match: "[a-zA-Z]")
+	}
+	get_dual_nation := {
+		filter_text(remove_tags(card.dual_nation_control), match: "[a-zA-Z]")
+	}
+		
+	get_clan_for_placeholder_name := {
+		if is_order() then
+			if card.new_nation_control == "none" then remove_tags(card.clan) + " Order"
+			else remove_tags(card.new_nation_control) + " Order"
+		else if card.new_nation_control == "none" then remove_tags(card.clan)
+		else remove_tags(card.new_nation_control)
+	}
+	get_rarity_abbreviation := {
+		if card.card_rarity == "Common" then "C"
+		else if card.card_rarity == "Rare" then "R"
+		else if card.card_rarity == "DoubleRare" then "RR"
+		else if card.card_rarity == "OverDoubleRare" then "ORR"
+		else if card.card_rarity == "TripleRare" then "RRR"
+		else if card.card_rarity == "VanguardRare" then "VR"
+		else if card.card_rarity == "SpecialParallel" or card.card_rarity == "DReverseSpecialParallel" or card.card_rarity == "ЯFrame" then "SP"
+		else if card.card_rarity == "SpecialVanguardRare" then "SVR"
+		else if card.card_rarity == "OriginRare" then "OR"
+		else if card.card_rarity == "AnotherSecretRare" then "ASR"
+		else if card.card_rarity == "GenerationRare" then "GR"
+		else ""
+	}
+		
+	get_placeholder_name := {
+		if card.rule_text == "" then ""
+		else get_rarity_abbreviation() + grade_to_number() + " " + get_clan_for_placeholder_name() + " "
+	}
+		
+	get_text_size := { if styling.shrink_rule_text != "" then 9.5 - styling.shrink_rule_text else 9.5 }
+		
+	is_order := { if card.card_frame == "order" or stylesheet.short_name == "Music" then "true" else "false" }
+	is_token := { if card.card_frame == "token" then "true" else "false" }
+	is_frameless := { if is_order() and get_era()=="V" then false else if is_token() or card.card_frame == "none" or card.card_rarity == "DressSecretRare" or card.card_frame == "borderless" or styling.Borderless=="Yes" then "true" else "false" }
+	is_boxless := { if (is_special() or is_frameless()) then "true" else "false" }
+	is_unit := { if is_order() then "false" else "true" }
+	is_dual := { card.dual_nation_control != "none" }
+	is_glitter := { substring(remove_tags(input: card.rule_text), end:1) == "輝" }
+	get_shadow_color := {
+		if is_order() then rgb(0,0,0)
+		else rgb(255,255,255)
+	}
+	
+	is_reverse_SP := { card.card_rarity=="DReverseSpecialParallel" or is_frameless() or styling.Force_Border_Override=="Encounter" or (stylesheet.short_name == "Music" and is_g()) }
+	
+	is_encounter := { styling.Force_Border_Override=="Encounter" }
+	
+	get_nation_color := {
+		myClan := remove_tags(input: card.card_nation)
+		if myClan=="United Sanctuary" then rgb(130,130,0)
+		else if myClan=="Dragon Empire" then rgb(130,0,0)
+		else if remove_tags(card.clan) == "Link Joker" then rgb(230,0,0)
+		else if myClan=="Star Gate" then rgb(130,130,130)
+		else if myClan=="Dark Zone" then rgb(130,0,130)
+		else if myClan=="Zoo" then rgb(0,130,0)
+		else if myClan=="Magallanica" then rgb(0,27,110)
+		else rgb (0,0,0)
+	}
+	
+	get_padding_horizontal := {
+		if styling.horizontal_padding == "" then "4" else styling.horizontal_padding
+	}
+	get_padding_vertical := {
+		if styling.vertical_padding == "" then "2" else styling.vertical_padding
+	}
+	
+	get_nation_filepath := {
+		if is_order() then "V_Layers/OrderNations/"
+		else if is_frameless() then "V_Layers/Flags/"
+		else "V_Layers/UnitNations/"
+	}
+	
+	get_border_type := {
+		if styling.Borderless=="Yes" then "Borderless" else if card.card_rarity=="ЯFrame" then "Reverse" else ""
+	}
+	
+	get_era := {
+		#trace(stylesheet.short_name)
+		if stylesheet.short_name == "V Style" then "V"
+		else if stylesheet.short_name == "overDress" then "D"
+		else "V"
+		#if set.set_era == "G - Stride" then "G"
+		#else if set.set_era == "V - Reboot" then "V"
+		#else "D"
+	}
+	
+	get_overDress_nation := {
+		myClan := remove_tags(input: card.clan)
+		if myClan == "Royal Paladin" then "KeterSanctuary"
+		else if myClan == "Oracle Think Tank" then "KeterSanctuary"
+		else if myClan == "Angel Feather" then "KeterSanctuary"
+		else if myClan == "Shadow Paladin" then "KeterSanctuary"
+		else if myClan == "Gold Paladin" then "KeterSanctuary"
+		else if myClan == "Genesis" then "KeterSanctuary"
+		else if myClan == "Kagero" then "Dragon Empire"
+		else if myClan == "Nubatama" then "Dragon Empire"
+		else if myClan == "Narukami" then "Dragon Empire"
+		else if myClan == "Tachikaze" then "Dragon Empire"
+		else if myClan == "Murakumo" then "Dragon Empire"
+		else if myClan == "Nova Grappler" then "BrandtGate"
+		else if myClan == "Dimension Police" then "BrandtGate"
+		else if myClan == "Link Joker" then "BrandtGate"
+		else if myClan == "Spike Brothers" then "DarkStates"
+		else if myClan == "Dark Irregulars" then "DarkStates"
+		else if myClan == "Pale Moon" then "DarkStates"
+		else if myClan == "Gear Chronicle" then "DarkStates"
+		else if myClan == "Granblue" then "Stoicheia"
+		else if myClan == "Aqua Force" then "Stoicheia"
+		else if myClan == "Megacolony" then "Stoicheia"
+		else if myClan == "Great Nature" then "Stoicheia"
+		else if myClan == "Neo Nectar" then "Stoicheia"
+		else if myClan == "Bermuda Triangle" then "LyricalMonasterio"
+		else if myClan == "Keter Sanctuary" then "KeterSanctuary"
+		else if myClan == "Dragon Empire" then "Dragon Empire"
+		else if myClan == "Brandt Gate" then "BrandtGate"
+		else if myClan == "Dark States" then "DarkStates"
+		else if myClan == "Stoicheia" then "Stoicheia"
+		else if myClan == "Lyrical Monasterio" then "LyricalMonasterio"
+		else if is_frameless() then "none"
+		else "CrayElemental"
+		}
+		
+	use_old_cost_symbols := {
+		if get_era() == "G" then true
+		else false
+	}
+	
+	process_textbox := {
+		if is_dual() then recolor_image(saturate(img, amount:0.5), color: rgb(255,180,180))
+		else if is_encounter() then invert_image(img)
+		else img
+	}
+	
+    expand_keywords@(
+    	condition: {
+    		correct_case
+    	}
+    	default_expand: {
+    		chosen(choice:if correct_case then mode else "lower case", set.automatic_reminder_text)
+    	},
+    	combine: {
+    		keyword  := "<nospellcheck>{keyword}</nospellcheck>"
+    		reminder := process_english_hints(reminder)
+    		keyword + if expand then "<atom-reminder-{mode}> ({reminder})</atom-reminder-{mode}>"
+    	}) 
+		
+	remove_color_tags :=
+		remove_tag@(tag: "<color>")					+
+		remove_tag@(tag: "<color:red>")	+
+		remove_tag@(tag: "<color:rgb(255,0,0)>")	+
+		remove_tag@(tag: "<color:rgb(0,255,0)>")	+
+		remove_tag@(tag: "</color>")				+
+		remove_tag@(tag: "<color-auto:red>")+
+		remove_tag@(tag: "</color-auto>") +
+		remove_tag@(tag: "<color:rgb(0,0,0)>")
+		#replace@(match: "(<color:red>|<color:rgb(0,255,0)>|</color>)", replace: "")
+	
+	power_filter :=
+		#numbers only
+		replace@(
+			match: "[^0-9+]",
+			replace: ""
+			) +
+		replace@(
+			match: "[0-9+]+",
+			replace: "& "
+		)
+		
+	name_filter :=
+		replace@(
+			match: "[ \t]+$",
+			replace: ""
+		)+
+		replace@(
+			match: ".+"
+			replace: "& "
+		)
+		
+	text_filter :=
+		#Compatability, for updating pre-export files
+		replace@(
+			match: "Ｑ"
+			in_context: "<match>[0-9]"
+			replace: "SB"
+		)+
+	
+		# step 1 : remove all automatic tags
+		remove_tag@(tag: "<sym-auto>") +
+		remove_tag@(tag: "<i-auto>")   +
+		remove_tag@(tag: "<b-auto>")   +
+		remove_tag@(tag: "<error-spelling") +
+		remove_tag@(tag: "<nospellcheck") +
+		# step 2 : reminder text for keywords
+		expand_keywords@(
+			condition: {
+				correct_case or (mode != "pseudo" and not used_placeholders)
+			}
+			default_expand: {
+				chosen(choice:if correct_case then mode else "lower case", set.automatic_reminder_text)
+			},
+			combine: {
+				keyword  := "<nospellcheck>{keyword}</nospellcheck>"
+				reminder := process_english_hints(reminder)
+				if mode == "pseudo" then "<i-auto>{keyword}</i-auto>"
+				else keyword + if expand then "<atom-reminder-{mode}> ({reminder})</atom-reminder-{mode}>"
+			}) +
+		# step 2b : move action keywords' reminder text to the end of the line
+		replace@(
+			match: "(<atom-reminder-action>(?:(?!<kw-).)*</atom-reminder-action></kw[^>]*>)(((?!<atom-reminder| ?<kw-)[^\n(])+)",
+			replace: "\\2\\1"
+			) +
+		# step 2c : remove duplicate reminder text
+		replace@(
+			match: "(<atom-reminder-[^>]*>[^)]+[)]</atom-reminder-[^>]*>)([^\n]+)\\1"
+			replace: "\\2\\1"
+			) +
+		
+		### Wikia format conversion
+		replace@(
+			match: "COST \\["
+			replace: "COST\\["
+		)+
+		replace@(
+			match: "\\[ACT\\]"
+			replace: "ACT"
+		)+
+		replace@(
+			match: "\\[AUTO\\]"
+			replace: "AUTO"
+		)+
+		replace@(
+			match: "\\[CONT\\]"
+			replace: "CONT"
+		)+
+		replace@(
+			match: "\\(((VC)|(RC)|(GC))\\)"
+			in_context: "((ACT)|(AUTO)|(CONT))(?<!\\])<match>"
+			#in_context: "(?<!text)<match>"
+			replace: { "(" + _1 + ")" }
+		)+
+		replace@(
+			match: "\\(((VC)|(RC)|(GC))\\)"
+			in_context: "(?<!\\])<match>"
+			#in_context: "(?<!text)<match>"
+			replace: { _1}
+		)+
+		replace@(
+			match: "\\[Power\\]"
+			replace: "<sym>剣</sym>"
+		)+
+		replace@(
+			match: "\\[Shield\\]"
+			replace: "<sym>盾</sym>"
+		)+
+		replace@(
+			match: "\\[Stand\\]"
+			replace: "<sym>立</sym>"
+		)+
+		replace@(
+			match: "\\[Rest\\]"
+			replace: "<sym>眠</sym>"
+		)+
+		replace@(
+			match: "\\)"
+			in_context: "Blast \\([0-9]+<match>"
+			replace: ""
+		)+
+		replace@(
+			match: "Counter Blast \\("
+			in_context: "<match>[0-9]+"
+			replace: "CB"
+		)+
+		replace@(
+			match: "Counter Charge \\("
+			in_context: "<match>[0-9]+"
+			replace: "CC"
+		)+
+		replace@(
+			match: "Soul Blast \\("
+			in_context: "<match>[0-9]+"
+			replace: "SB"
+		)+	
+		replace@(
+			match: "Soul Charge \\("
+			in_context: "<match>[0-9]+"
+			replace: "SC"
+		)+	
+		replace@(
+			match: " Generation Break "
+			in_context: "<match>[0-9]+"
+			replace: "GB"
+		)+
+		# Auto Symbols: Done early so other things can account for it
+		replace@(
+			match: "ACT",
+			replace: "<atom><sym>起</sym></atom>"
+			) +
+		replace@(
+			match: "AUTO",
+			replace: "<atom><sym>自</sym></atom>"
+			) +
+		replace@(
+			match: "CONT",
+			replace: "<atom><sym>永</sym></atom>"
+			) +
+		# step 3a : expand shortcut word CARDNAME
+		replace@(
+			match: "CARDNAME",
+			in_context: "(^|[[:space:]]|\\()<match>", # TODO: Allow any punctuation before
+			replace: "<atom-cardname></atom-cardname>"
+			) +
+		replace@(
+			match: "~",
+			in_context: "(^|[[:space:]]|\"|\\()<match>", # TODO: Allow any punctuation before
+			replace: "<atom-cardname></atom-cardname>"
+		)+
+		# Fill in Stride or G-Guard template
+		replace@(
+			match: "STRIDEPROC",
+			replace: "<atom-stride></atom-stride>"
+			) +
+		replace@(
+			match: "GUARDPROC",
+			replace: "<atom-gguard></atom-gguard>"
+			) +
+		replace@(
+			match: "COMMANDPROC",
+			replace: "<atom-command></atom-command>"
+			) +
+		replace@(
+			match: "HOPT",
+			replace: "<atom>This ability may only be used by a card with the same card name once a turn.</atom>"
+		) +
+		replace@(
+			match: "Command Circle",
+			replace: "<atom-commandlocation></atom-commandlocation>"
+			) +
+		replace@(
+			match: "command circle",
+			replace: "<atom-commandlocationtext></atom-commandlocationtext>"
+			) +
+		replace@(
+			match: "GIFTNAME"
+			in_context: "(^|[[:space:]]|\\()<match>",
+			replace: "<atom-giftname></atom-giftname>"
+			) +
+		replace@(
+			match: "overRemind",
+			replace: "<atom><i>(You may only have one <sym>超</sym> trigger in a deck. When revealed as a trigger, remove that card, draw a card, choose one of your units, and it gets <sym>剣</sym>+<color:red>100 Million<color:black> until end of turn! If revealed during drive check, activate its additional effect!)</i></atom-over>"
+		) +
+		# step 3c : fill in atom fields
+		tag_contents@(
+			tag: "<atom-cardname>",
+			contents: { "<nospellcheck>" + (if card_name=="" then "CARDNAME" else trim(card_name)) + "</nospellcheck>" }
+			) +
+		tag_contents@(
+			tag: "<atom-legname>",
+			contents: { "<nospellcheck>" + (if card_name=="" then "LEGENDNAME" else legend_filter(card_name)) + "</nospellcheck>" }
+			) +
+		tag_contents@(
+			tag: "<atom-stride>"
+			contents: { "<sym>越</sym>-Stride Step-<sym>払</sym>[Discard one or more cards from your hand with the sum of their grades being 3 or greater], <sym>越</sym> this card on <sym>先</sym> from face down." }
+			) +
+		tag_contents@(
+			tag: "<atom-gguard>"
+			contents: { "<sym>放</sym>-Opponent Turn's Guard Step-<sym>払</sym>[Discard a <sym>H</sym> from your hand], and call this card to your <sym>助</sym> from face down." }
+			) +
+		tag_contents@(
+			tag: "<atom-command>"
+			contents: { if card.order_type=="g blitz order" then "<sym>命</sym>-Guard Step-<sym>払</sym>[Discard a grade 0 from your hand], and play from face down." else "<sym>命</sym>-Main Phase-<sym>払</sym>[Discard a grade 0 from your hand], and play from face down." }
+			#contents: { "<sym>命</sym>-Main Phase-<sym>払</sym>[Discard a grade 0 from your hand], and issue this card to your Order Zone." }
+			) +
+		tag_contents@(
+			tag: "<atom-commandlocation>"
+			contents: { "Order Zone" }
+			) +
+		tag_contents@(
+			tag: "<atom-commandlocationtext>"
+			contents: { "order zone" }
+			) +
+		tag_contents@(
+			tag: "<atom-giftname>"
+			contents: { "Imaginary Gift:" + get_gift_type() }
+			) +
+		# step 7 : Spellcheck
+		# step 7a : automatic capitalization
+		replace@(
+			match: "([:]|—| — |[.][ ]|[&][ ])" # preceded by this
+				 + "([[:lower:]])" # match this
+				 + "(?![)])",      # not followed by this
+			replace: { _1 + to_upper(_2) }) +
+		# step 7b : Vanguard does not have a space after a colon
+		replace@(
+			match: ":[ ]"
+			replace: ":"
+		) +
+		replace@(
+			match: "([Escape([)][[:lower:]])",
+			in_context: ":<sym>払</sym><match>"
+			replace: { to_upper(_1) }
+		) +
+		replace@(
+			match: "([Escape([)][[:upper:]])",
+			in_context: ",<sym>払</sym><match>"
+			replace: { to_lower(_1) }
+		) +
+		replace@(
+			match: "[&]",
+			in_context: "([a-zA-Z0-9])<match>",
+			replace: " &"
+		) +
+		replace@(
+			match: "[&]",
+			in_context: "<match>([a-zA-Z0-9])",
+			replace: "& "
+		) +
+		#step 7d : Assume "CB", "SB", and "SC" are always meant to be symbols when followed with a number
+		replace@(
+			match: "[Cc][Bb]",
+			in_context: "<match>[0-9]"
+			replace: "<atom><sym>Ｃ</sym></atom>"
+		) +
+		replace@(
+			match: "[Cc][Cc]"
+			in_context: "<match>[0-9]"
+			replace: "<atom><sym>Ｆ</sym></atom>"
+		) +
+		replace@(
+			match: "([0-9]+)"
+			in_context: "((<atom><sym>Ｃ</sym></atom>)|(<atom><sym>Ｆ</sym></atom>))<match>(?!C)"
+			replace: { if styling.justify_text then "<atom><sym>" + number_to_symbol(input: _1) + "</sym></atom>" else "<atom><sym>" + input + "C</sym></atom>" }
+		) +
+		replace@(
+			match: "[Ss][Bb]",
+			in_context: "<match>[1-9]"
+			replace: "<atom><sym>Ｑ</sym></atom>"
+		) +
+		replace@(
+			match: "[Ss][Cc]",
+			in_context: "<match>[1-9]+"
+			replace: "<atom><sym>Ｗ</sym></atom>"
+		) +
+		replace@(
+			match: "(<sym-auto>)*([0-9]+)(</sym-auto>)*",
+			in_context: "((<atom><sym>Ｑ</sym></atom>)|(<atom><sym>Ｗ</sym></atom>))<match>"
+			replace: "<sym-auto>&</sym-auto>"
+		) +
+		#step 7e : Non-grade numbers on their own should be words.
+		replace@(
+			match: "([0-9])",
+			in_context: "(?<!grade)(?<!being)(?<!becomes)(?<!is)(?<!to)(?<!instead of) <match>",
+			replace: { english_number(_1) }
+		) +
+		#step 7f : Common mistakes
+		replace@(
+			match: "rear guard",
+			replace: "rear-guard"
+		) + 
+		# step 8 : italicize text in parenthesis
+		replace@(
+			match: "[(]([^)\n]|[(][^)\n]*[)])*[)]?",
+			in_context: "(^|[[:space:]|-])<match>|<atom-keyword><match></",
+			replace: "<i-auto>&</i-auto>") +
+		# step 9 : Colour legion name
+		replace@(
+			match: "L/20kG \"",
+			replace: "L/20kG <color-auto:red>\""
+		) +
+		# step 11 : Convert VC, RC, and GC
+		replace@(
+			match: "[\\(]VC[\\)]"
+			replace: "<atom><sym>右先左</sym></atom>"
+		)+
+		replace@(
+			match: "[\\(]RC[\\)]"
+			replace: "<atom><sym>右友左</sym></atom>"
+		)+
+		replace@(
+			match: "[\\(]GC[\\)]"
+			replace: "<atom><sym>右助左</sym></atom>"
+		)+
+		replace@(
+			match: "VC"
+			replace: "<atom><sym>先</sym></atom>"
+		)+
+		replace@(
+			match: "RC"
+			replace: "<atom><sym>友</sym></atom>"
+		)+
+		replace@(
+			match: "GC"
+			replace: "<atom><sym>助</sym></atom>"
+		)+
+		replace@(
+			match: "\\(\\("
+			replace: "<atom><sym>右</sym></atom>"
+		)+
+		replace@(
+			match: "\\)\\)"
+			replace: "<atom><sym>左</sym></atom>"
+		)+
+		replace@(
+			match: "--"
+			replace: "•"
+		)+
+		# step 11b : Brackets enclosing stuff before a colon? Probably wanted the square ones.
+		replace@(
+			match: "[(]",
+			in_context: "</atom><match>",
+			replace: "<atom><sym>右</sym></atom>"
+		) +
+		replace@(
+			match: "[)]",
+			in_context: "<match>([:]|<atom>)",
+			replace: "<atom><sym>左</sym></atom>"
+		) +
+		replace@(
+			match: "/",
+			in_context: "(先|友|助)</sym></atom><match><atom>",
+			replace: "<atom><sym>｜</sym></atom>"
+		)+
+		replace@(
+			match: "//"
+			replace: "<atom><sym>｜</sym></atom>"
+		)+
+		replace@(
+			match: "\\[\\["
+			replace: "<atom><sym>上</sym></atom>"
+		)+
+		replace@(
+			match: "\\]\\]"
+			replace: "<atom><sym>下</sym></atom>"
+		)+
+		replace@(
+			match: ",,"
+			replace: "<atom><sym>¦</sym></atom>"
+		)+
+		replace@(
+			match: "Discard1"
+			replace: "<sym>Ｈ①</sym>"
+		)+
+		## Step 13: Convert Power, SLD, AUTO, CONT, ACT
+		replace@(
+			match: "1(<sym>)*/(</sym>)*[Tt][Uu][Rr][Nn]"
+			replace: "<atom><sym>度</sym></atom>"
+		)+
+		replace@(
+			match: "1(<sym>)*/(</sym>)*[Ff][Ii][Gg][Hh][Tt]"
+			replace: "<atom><sym>Ｏ</sym></atom>"
+		)+
+		replace@(
+			match: "BOOST"
+			replace: "<sym>B</sym>"
+		)+
+		replace@(
+			match: "INTER"
+			replace: "<sym>I</sym>"
+		)+
+		replace@(
+			match: "TWIN"
+			replace: "<sym>T</sym>"
+		)+
+		replace@(
+			match: "TRIPLE"
+			replace: "<sym>U</sym>"
+		)+
+		replace@(
+			match: "HEAL"
+			replace: "<atom><sym>治</sym></atom>"
+		)+
+		replace@(
+			match: "STANDTRIG"
+			replace: "<</atom>atom><sym>醒</sym></atom>"
+		)+
+		replace@(
+			match: "DRAW"
+			replace: "<atom><sym>引</sym></atom>"
+		)+
+		replace@(
+			match: "Critical"
+			replace: "<atom><sym>★</sym></atom>"
+		)+
+		replace@(
+			match: "OVER"
+			replace: "<atom><sym>超</sym></atom>"
+		)+
+		replace@(
+			match: "COST"
+			replace: "<atom><sym>払</sym></atom>"
+		)+
+		replace@(
+			match: "[Rr]EST"
+			replace: "<atom><sym>眠</sym></atom>"
+		)+
+		replace@(
+			match: "STAND"
+			replace: "<atom><sym>立</sym></atom>"
+		)+
+		# Step 14: Legion, Generation, and Limit Break
+		replace@(
+			match: "LEGION"
+			replace: "<atom><sym>双</sym></atom>"
+		)+
+		replace@(
+			match: "LG20K"
+			replace: "<atom><sym>L/20kG</sym></atom>"
+		)+
+		replace@(
+			match: "LG21K"
+			replace: "<atom><sym>L/21kG</sym></atom>"
+		)+
+		replace@(
+			match: "LG22K"
+			replace: "<atom><sym>L/22kG</sym></atom>"
+		)+
+		replace@(
+			match: "ULTSTRIDE"
+			replace: "<atom><sym>終</sym></atom>"
+		)+
+		replace@(
+			match: "STRIDE"
+			replace: "<atom><sym>越</sym></atom>"
+		)+
+		replace@(
+			match: "GB1"
+			replace: "<atom><sym>Ⅰ</sym></atom>"
+		)+
+		replace@(
+			match: "GB2"
+			replace: "<atom><sym>Ⅱ</sym></atom>"
+		)+
+		replace@(
+			match: "GB3"
+			replace: "<atom><sym>Ⅲ</sym></atom>"
+		)+
+		replace@(
+			match: "GB4"
+			replace: "<atom><sym>Ⅳ</sym></atom>"
+		)+
+		replace@(
+			match: "GB5"
+			replace: "<atom><sym>Ⅴ</sym></atom>"
+		)+
+		replace@(
+			match: "GB8"
+			replace: "<atom><sym>Ⅷ</sym></atom>"
+		)+
+		replace@(
+			match: "GFLIP"
+			replace: "<atom><sym>Ｇ</sym></atom>"
+		)+
+		replace@(
+			match: "GGUARD"
+			replace: "<atom><sym>放</sym></atom>"
+		)+
+		replace@(
+			match: "LB4"
+			replace: "<atom><sym>LB4</sym></atom>"
+		)+
+		replace@(
+			match: "LB5"
+			replace: "<atom><sym>LB5</sym></atom>"
+		)+
+		replace@(
+			match: "<<"
+			replace: "<atom><sym>開</sym></atom>"
+		)+
+		replace@(
+			match: ">>"
+			replace: "<atom><sym>閉</sym></atom>"
+		)+
+		replace@(
+			match: "POW"
+			replace: "<atom><sym>剣</sym></atom>"
+		)+
+		replace@(
+			match: "SLD"
+			replace: "<atom><sym>盾</sym></atom>"
+		)+
+		replace@(
+			match: "CRIT"
+			replace: "<atom><sym>星</sym></atom>"
+		)+
+		
+		replace@(
+			match: "COMMAND"
+			replace: "<atom><sym>命</sym></atom>"
+		)+
+		replace@(
+			match: "NEMESIS"
+			replace: "<atom><sym>相</sym></atom>"
+		)+
+		replace@(
+			match: "ROYAL"
+			replace: "<atom><sym>AJKQ</sym></atom>"
+		)+
+		
+		replace@(
+			match: "MELODY"
+			replace: "<atom><sym>音</sym></atom>"
+		)+
+		
+		replace@(
+			match: "overDress"
+			replace: "<atom><sym>服</sym></atom>"
+		)+
+		
+		replace@(
+			match: "Over Soul"
+			replace: "<atom><sym>憑</sym></atom>"
+		)+
+		
+		replace@(
+			match: "GLITTER"
+			replace: "<atom><sym>輝</sym></atom>"
+		)+
+		
+		#Fix spacing TODO
+		#replace@(
+		#	match: "\n"
+		#	in_context: "(魂|集)[^\n\r]+<match"
+		#	replace: "\r"
+		#)+
+		
+		
+		# Last Step : spellcheck - Last because it's telling the user what to fix, _after_ we're done playing with it.
+		{ if set.mark_errors then
+			check_spelling(
+				language: language().spellcheck_code,
+				extra_dictionary: "/CardfightVanguard.mse-game/vanguard-words"
+				extra_match: my_text_words
+			)
+		  else input
+		}
+		
+	split_redtext :={
+		stripped := remove_tag(tag: "<color", input)
+		blocks := split_text(match: "(?<!(, if ))(?<!([0-9] with ))(?<!( unit with ))(?<!( card with ))(?<!( vanguard with ))(?<!( rear-guard with ))(?<!( a ))(?<!( riding from ))(?<!(-))(?<!( or ))" + "\"" + "(?!( is in | in | or | on |,))", stripped)
+		result := base_symbols(blocks[0])
+		for x from 1 to length(blocks)-1 do result := result + (if is_odd(value: x)==0 then "\"") + "<color:" + ( if is_odd(value: x)==1 then "rgb(255,0,0)" else to_string(get_text_color()) ) + ">" + (if is_odd(value: x)==1 then ("\"" + red_symbols(input: blocks[x])) else base_symbols(input: blocks[x])) 
+		result
+		# trace(length(blocks))
+		# for x from 1 to length(blocks)-1 do result := result + (if (is_even(value: x) == 0) then ("<color:rgb(255,0,0)>\"" + blocks[x] + (if (x==length(blocks)-1) then "" else "\"<color:rgb(0,0,0)>")) else "\"" + blocks[x] + "\"" )
+		# for x from 1 to length(blocks)-1 do result := result + (if (is_even(value: x) == 0) then ("<color:rgb(252,0,0)>\"" + blocks[x]) else ("<color:rgb(0,0,0)>\"" + blocks[x]))
+		# blocks := split_text(match: "(?<=[get |gets |gain |gains |and |may |to |abilities with |become |may pay |you may ])" + "\"" + "(?! in )", stripped)
+		# blocks := split_text(match: "(?<![,|0-9|unit(s*)|card(s*)] with )" + "\"" + "(?![ is in | in | on ])", stripped)
+		# (if is_odd(value: x)==1 then ("\"" + red_symbols(input: blocks[x])) else base_symbols(input: blocks[x]))
+		# rgb({is_odd(value: x) * 255},0,0)>"
+	}
+	
+	red_symbols :={
+		input := replace(
+			input,
+			match: "右",
+			replace: "上"
+		)
+		input := replace(
+			input,
+			match: "左",
+			replace: "下"
+		)
+		input := replace(
+			input,
+			match: "｜",
+			replace: "¦"
+		)
+		input
+	}
+	base_symbols :={
+		input := replace(
+			input,
+			match: "上",
+			replace: "右"
+		)
+		input := replace(
+			input,
+			match: "下",
+			replace: "左"
+		)
+		input := replace(
+			input,
+			match: "¦",
+			replace: "｜"
+		)
+		input
+	}
+	
+	is_odd := {
+		result := 1
+		for x from 0 to value do result := (1 - result)
+		result
+	}
+		
+	spellcheck_filter :=
+		{ if set.mark_errors then
+			check_spelling(
+				language: language().spellcheck_code,
+				extra_dictionary: "/CardfightVanguard.mse-game/vanguard-words"
+				extra_match: my_text_words
+			)
+		  else input
+		}
+	
+	my_text_words := match@(match:
+		"(:If$)|(:Gains$)|(:This$)|(:During$)|(:When$)|(:At$)|(:Play$)|(:Resist$)|(:Impact$)|(払[Escape([)])|(右Damage$)|(剣+)|(D+)|(A+)|(drive+)|(^toR)|(^onR)|(^anR)|(^toG)|(^yourR)|(^Gift:)|(^●)|(^<[a-zA-Z]+>$)") #Anything that ends in recognized colon sequences (aka category/locations/conditions)
+	
+	# these are considered a correct 'word' for spellchecking in the text box:
+	additional_text_words := match@(match:
+	"(?ix)^(?:                         # match whole word
+	  [:$]								# anything before a colon
+	| (<sym>[自]</sym>|<sym>[永]</sym>|<sym>[起]</sym>)<sym>[Escape([)]</sym>(^␣zone) #Zone locations
+	#  (<sym>[自]</sym>|<sym>[永]</sym>|<sym>[起]</sym>)<sym>[Escape([)]</sym>(<sym>[V]</sym>|<sym>[R]</sym>|<sym>[G]</sym>)<sym>[Escape([)]</sym>:If # ACT/AUTO/CONT
+	#|  (<sym>[自]</sym>|<sym>[永]</sym>|<sym>[起]</sym>)<sym>[Escape([)]</sym>(<sym>[V]</sym>|<sym>[R]</sym>|<sym>[G]</sym>)<sym>[Escape([)]</sym>:When
+	#  <atom-[^>]*>.*?</atom-[^>]*>     # cardnames and stuff
+	| [+-]?[0-9X]+ / [+-]?[0-9X]+      # '3/3', '+X/+X'
+	)$")
+	
+	get_sp_text:= {
+		if is_boxless() then
+			filter_sp_text(remove_color_tags(value))
+		else ""
+	}
+	
+	filter_sp_text := 
+		replace@(
+			match: "剣"
+			replace: "黒"
+		) + 
+		replace@(
+			match: "右|上"
+			replace: "㊧"
+		) +
+		replace@(
+			match: "左|下"
+			replace: "㊨"
+		)
+	
+	
+	type_over_list := replace_rule(match:" ?/", replace:"")
+	clan_name_filter := tag_remove_rule(tag: "<word-list-") + { "<word-list-clan>{input}</word-list-clan>" }
+	race_name_filter := tag_remove_rule(tag: "<word-list-") + { "<word-list-race>{input}</word-list-race>" }
+	nation_name_filter := tag_remove_rule(tag: "<word-list-") + {
+	"<word-list-nation>{input}</word-list-nation>" }
+	

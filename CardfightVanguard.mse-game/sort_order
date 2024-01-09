@@ -1,0 +1,151 @@
+############### Scripts #################
+
+######################################### Defaults and Localization
+
+# TODO: Add language file
+#include file: language
+
+# Shape of cards, can be changed in style files
+card_shape := { "normal" }
+
+######################################### Sorting symbols
+# correctly sort a symbol
+symbol_sort := sort_text@(order: "[(act|auto|cont)]NV/R,GMOCQWFXYZ[0123456789]SEPDABITUHJKL")
+
+######################################### Numbers and sorting
+# Sorting scripts ordered by rarity -> clan -> grade -> power -> name
+rarity_sort := {
+	if card.card_rarity == "SpecialVanguardRare" then "AA"
+	else if card.card_rarity == "SpecialParallel" then "AB"
+	else if card.card_rarity == "OriginRare" then "AC"
+	else if card.card_rarity == "VanguardRare" or card.card_rarity == "GenerationRare" then "BA"
+	else if card.card_rarity == "TripleRare" then "BB"
+	else if card.card_rarity == "DoubleRare" then "BC"
+	else if card.card_rarity == "Rare" then "BD"
+	else if card.card_rarity == "Common" then "BE"
+	else if is_token() then "Z"
+	else "Y"
+}
+
+nation_sort := {
+	if card.card_nation == "United Sanctuary" then "A"
+	else if card.card_nation == "Dragon Empire" then "B"
+	else if card.card_nation == "Star Gate" then "C"
+	else if card.card_nation == "Dark Zone" then "D"
+	else if card.card_nation == "Magallanica" then "E"
+	else if card.card_nation == "Zoo" then "F"
+	else if card.card_nation == "Cray Elemental" then "Z"
+	else "Y"
+}
+
+# Sorting clans: First letter is for Nation, second is for Clan
+clan_sort := {
+	myClan := remove_tags(input: card.clan)
+	if myClan == "Royal Paladin" then "a"
+	else if myClan == "Oracle Think Tank" then "b"
+	else if myClan == "Angel Feather" then "c"
+	else if myClan == "Shadow Paladin" then "d"
+	else if myClan == "Gold Paladin" then "e"
+	else if myClan == "Genesis" then "f"
+	else if myClan == "Kagero" then "g"
+	else if myClan == "Nubatama" then "h"
+	else if myClan == "Tachikaze" then "i"
+	else if myClan == "Murakumo" then "j"
+	else if myClan == "Narukami" then "k"
+	else if myClan == "Nova Grappler" then "l"
+	else if myClan == "Dimension Police" then "m"
+	else if myClan == "Entranger" then "n"
+	else if myClan == "Link Joker" then "o"
+	else if myClan == "Spike Brothers" then "p"
+	else if myClan == "Dark Irregulars" then "q"
+	else if myClan == "Pale Moon" then "r"
+	else if myClan == "Gear Chronicle" then "s"
+	else if myClan == "Granblue" then "t"
+	else if myClan == "Bermuda Triangle" then "u"
+	else if myClan == "Aqua Force" then "v"
+	else if myClan == "Megacolony" then "q"
+	else if myClan == "Great Nature" then "x"
+	else if myClan == "Neo Nectar" then "y"
+	else if myClan == "Cray Elemental" then "z"
+	#else if card.card_frame == "order" then "XB"
+	#else if myClan == "Touken Ranbu" then "XC"
+	else "ZZ"
+}
+
+# Sorting grades from highest to lowest
+grade_sort := { 9 - grade_to_number() }
+
+# Process the name for sorting rules
+sort_name :=
+	# Remove "The", "A", and "And" at the beginning
+	replace@(match: "^(The|An?) ", replace: "") +
+	# Remove commas and apostrophes
+	replace@(match: "(,|')", replace: "") +
+	# Remove bold and italic tags
+	replace@(match: "(<b>|<i>|</b>|</i>)", replace: "") +
+	# Make lowercase
+	to_lower
+	
+power_sort := {
+		if card.power == "0 " then "Z"
+		else if card.power == "1000 " then "Y"
+		else if card.power == "2000 " then "X"
+		else if card.power == "3000 " then "W"
+		else if card.power == "4000 " then "V"
+		else if card.power == "5000 " then "U"
+		else if card.power == "6000 " then "T"
+		else if card.power == "7000 " then "S"
+		else if card.power == "8000 " then "R"
+		else if card.power == "9000 " then "Q"
+		else if card.power == "10000 " then "P"
+		else if card.power == "11000 " then "O"
+		else if card.power == "12000 " then "N"
+		else if card.power == "13000 " then "M"
+		else if card.power == "14000 " then "K"
+		else if card.power == "15000 " then "J"
+		else if card.power == "16000 " then "I"
+		else "A"
+	}
+
+is_special := { card.card_rarity == "SpecialParallel" or card.card_rarity == "SpecialVanguardRare" or card.card_rarity == "OriginRare" or card.card_rarity == "DReverseSpecialParallel" or card.card_rarity == "ЯFrame" or card.card_rarity == "DressSecretRare" }
+
+set_filter := {
+	if is_token()
+		then { is_token() }
+	if card.card_rarity == "DressSecretRare"
+		then { card.card_rarity == "DressSecretRare" }
+	if is_special()
+		then { is_special() }
+	else
+		{ not is_special() }
+}
+
+###We need to add the power_sort TODO:
+card_position := {
+	position (
+		of: card
+		in: set
+		order_by: { rarity_sort() + nation_sort() + clan_sort() + grade_sort() + power_sort() + sort_name(card.card_name) }
+		filter: set_filter()
+	) + 1
+}
+
+card_count := {
+	number_of_items(in: set, filter: set_filter())
+}
+
+card_number := { 
+	(if is_token() then "T"
+		else if is_special() then "S"
+		else if card_position() < 100 then "0"
+		else "") + 
+	(if card_position() < 10 then "0" else "") + card_position() 
+}
+
+get_set_code := { 
+	if set.set_code != "" then set.set_code else "???"
+}
+
+get_set_region := {
+	if set.set_region != "" then set.set_region else "EN"
+}

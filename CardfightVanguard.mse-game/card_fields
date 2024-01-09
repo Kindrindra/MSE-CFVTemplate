@@ -1,0 +1,590 @@
+card field:
+	type: image
+	name: card_image
+	show statistics: false
+	description: The card's image
+	
+card field:
+	type: image
+	name: overlay_image
+	show statistics: false
+	editable: true
+	description: The card's image
+	
+card field:
+	type: choice
+	name: frame_control
+	description: The card's type
+	show statistics: true
+	default: get_default_frame()
+	choice: normal
+	choice: trigger
+	choice: stride
+	choice: gguard
+	choice: order
+	choice: token
+	choice: none
+	
+card field:
+	type: choice
+	name: card_frame
+	description: The card's type
+	editable: false
+	default: card.frame_control
+	save value: false
+	
+card field:
+	type: choice
+	name: nation_control
+	show statistics: true
+	default: get_default_nation()
+	choice: Cray Elemental
+	choice: United Sanctuary
+	choice: Dragon Empire
+	choice: Dark Zone
+	choice: Zoo
+	choice: Star Gate
+	choice: Magallanica
+	choice: Custom
+	
+card field:
+	type: choice
+	name: new_nation_control
+	show statistics: true
+	choice: none
+	choice: Dragon Empire
+	choice: Dark States
+	choice: Brandt Gate
+	choice: Keter Sanctuary
+	choice: Stoicheia
+	choice: Lyrical Monasterio
+	choice: Cray Elemental
+	choice: Custom
+	choice: Monster Strike
+	choice: Shaman King
+	
+card field:
+	type: choice
+	name: dual_nation_control
+	choice: none
+	choice: Dragon Empire
+	choice: Dark States
+	choice: Brandt Gate
+	choice: Keter Sanctuary
+	choice: Stoicheia
+	choice: Lyrical Monasterio
+
+card field:
+	type: choice
+	name: card_nation
+	editable: false
+	default: card.nation_control
+	save value: false
+	
+card field:
+	type: choice
+	name: card_grade
+	card list column: 3
+	show statistics: true
+	card list visible: true
+	default: get_default_grade()
+	choice: grade0
+	choice: grade1
+	choice: grade2
+	choice: grade3
+	choice: grade4
+	choice: Ggrade4
+	choice: grade5
+	choice: grade10
+	choice: NoGrade
+	
+card field:
+	type: choice
+	name: grade_image
+	default: "default"
+	editable: false
+	save value: false
+	
+card field:
+	type: choice
+	name: ability_control
+	default: get_default_ability()
+	choice: none
+	choice: boost
+	choice: intercept
+	choice: twindrive
+	choice: tripledrive
+	
+card field:
+	type: choice
+	name: card_ability
+	show statistics: true
+	default: card.ability_control
+	editable: false
+	save value: false
+	
+card field:
+	type: choice
+	name: gift_control
+	card list column: 7
+	show statistics: true
+	default: get_default_gift()
+	choice: none
+	choice: PersonaRide
+	choice: Accel
+	choice: Force
+	choice: Protect
+	
+card field:
+	type: choice
+	name: card_gift
+	default: card.gift_control
+	editable: false
+	save value: false
+	
+card field:
+	type: choice
+	name: trigger_control
+	default: "none"
+	choice: none
+	choice: Critical
+	choice: Draw
+	choice: Heal
+	choice: Front
+	choice: Stand
+	choice: Over
+	
+card field:
+	type: choice
+	name: card_trigger
+	default: card.trigger_control
+	card list column: 7
+	card list visible: true
+	editable: false
+	save value: false
+	
+card field:
+	type: choice
+	name: shield_control
+	default: get_default_shield()
+	choice: none
+	choice: 5000
+	choice: 10000
+	choice: 15000
+	choice: 20000
+	choice: 50000
+	choice: GGuard
+	choice: PerfectGuard
+	choice: CustomShield
+	choice: CustomSentinel
+	
+card field:
+	type: choice
+	name: card_shield
+	editable: false
+	default: card.shield_control
+	save value: false
+	
+card field:
+	type: choice
+	name: card_rarity
+	default: "Common"
+	choice: none
+	choice: Common
+	choice: Rare
+	choice: DoubleRare
+	choice: OverDoubleRare
+	choice: TripleRare
+	choice: VanguardRare
+	choice: SpecialParallel
+	choice: DReverseSpecialParallel
+	choice: SpecialVanguardRare
+	choice: OriginRare
+	choice: AnotherSecretRare
+	choice: ЯFrame
+	choice: GenerationRare
+	choice: DressSecretRare
+	choice: None
+	
+card field:
+	type: choice
+	name: rarity_display
+	default: "default"
+	card list column: 6
+	card list visible: true
+	show statistics: true
+	editable: false
+	save value: false
+	
+	
+	
+###### Text Fields
+
+
+card field:
+	type: text
+	name: card_name
+	multi line: false
+	identifying: true
+	description: Card's name
+	default: get_placeholder_name()
+	script: name_filter(input: value)
+	card list column: 1
+	card list visible: true
+
+card field:
+	type: text
+	name: rule_text
+	multi line: true
+	default: get_default_rule_text()
+	script: split_redtext(text_filter(input: value, card_name: card.card_name, rarity: card.card_rarity))
+	description: Card's effects
+	
+card field:
+	type: choice
+	name: text_box
+	show statistics: false
+	card list visible: false
+	editable: false
+	choice: default
+	
+card field:
+	type: text
+	name: secondary_rule_text
+	multi line: true
+	default: get_default_secondary_text()
+	script: split_redtext(text_filter(input: value, card_name: card.card_name, rarity: card.card_rarity))
+	description: Card's effects
+	
+card field:
+	type: choice
+	name: secondary_text_box
+	show statistics: false
+	card list visible: false
+	editable: false
+	choice: default
+	
+card field:
+	type: text
+	name: flavor_text
+	multi line: true
+	description: Flavour text
+	script: spellcheck_filter(input: value)
+	
+card field:
+	type: choice
+	name: flavor_box
+	show statistics: false
+	card list visible: false
+	editable: false
+	choice: default
+	
+card field:
+	type: text
+	name: power
+	card list column: 4
+	card list visible: true
+	multi line: false
+	default: get_default_power()
+	script: power_filter(input: value) 
+	description: Card's power value
+	
+card field:
+	type: text
+	name: shield
+	card list column: 5
+	card list visible: true
+	multi line: false
+	default: shield_to_number()
+	description: Card's shield value
+	
+card field:
+	type: text
+	name: clan
+	script: clan_name_filter(value)
+	multi line: false
+	card list column: 2
+	show statistics: true
+	card list visible: true
+	description: The clan the card belongs to
+	
+card field:
+	type: text
+	name: race
+	multi line: false
+	description: Card's race
+	script: race_name_filter(value)
+	#script: spellcheck_filter(input: value)
+	
+card field:
+	type: text
+	name: set code
+	description: Card's collection number
+	save value: false
+	script: get_set_code() + "/" + card_number() + get_set_region()
+	##sort script: card_position() + card_number()
+	card list visible: true
+	card list column: 10
+	card list width: 50
+	card list name: #
+	card list alignment: right
+	editable: false
+	show statistics: false
+	
+card field:
+	type: text
+	name: illus line
+	multi line: false
+	default: "Illus / "
+	description: Credits the artist of the image. Please fill this in, please.
+	
+card field:
+	type: choice
+	name: name_box
+	description: Overlay
+	editable: false
+	default: card.frame_control
+	save value: false
+	
+card field:
+	type: choice
+	name: class_control
+	default: "Defend"
+	choice: Attack
+	choice: Defend
+	
+card field:
+	type: choice
+	name: card_class
+	default: card.class_control
+	editable: false
+	save value: false
+	
+card field:
+	type: choice
+	name: type_control
+	description: Type of card; Normal are using during your Main Phase, Blitz are used during Guard Step of the opponent's turn
+	default: get_default_order_type()
+	choice: normal unit
+	choice: trigger unit
+	choice: normal order
+	choice: g unit
+	choice: blitz order
+	choice: set order
+	choice: trigger order
+	choice: multiline normal
+	choice: multiline blitz
+	choice: multiline set
+	
+card field:
+	type: choice
+	name: order_type
+	description: Type of order; Normal are using during your Main Phase, Blitz are used during Guard Step of the opponent's turn
+	editable: false
+	default: card.type_control
+	save value: false
+	
+card field:
+	type: choice
+	name: v_icon_control
+	description: Designates format legality (D for Standard, V for V Premium, none for Premuim-only)
+	default: get_era()
+	#default: {if card.new_nation_control != "none" then "D" else if card.card_frame=="normal" then "V" else "none"}()
+	#default: {if set.set_era=="V - Reboot" and card.card_frame=="normal" then "Yes" else if set.set_era=="D - overDress" then "D" else "none"}()
+	choice: V
+	choice: D
+	choice: none
+	
+card field:
+	type: choice
+	name: v_icon
+	editable: false
+	default: card.v_icon_control
+	
+card field:
+	type: text
+	name: set_order_type
+	default: to_upper(card.order_type)
+	script: to_upper(value)
+	
+card field:
+	type: text
+	name: set_order_type_reverse_shadow
+	editable: false
+	save value: false
+	default: card.set_order_type
+	
+card field:
+	type: image
+	name: custom_nation
+	show statistics: false
+	description: The image for the custom nation
+	
+card field:
+	type: image
+	name: custom_grade_symbol
+	show statistics: false
+	description: The image for the grade symbol of custom nation
+	
+card field:
+	type: image
+	name: custom_nation_name
+	show statistics: false
+	description: The image for the custom nation's name
+	
+	
+card field:
+	type: choice
+	name: critical_control
+	default: 1
+	choice: 0
+	choice: 1
+	
+card field:
+	type: choice
+	name: card_critical
+	editable: false
+	default: card.critical_control
+	save value: false
+	
+card field:
+	type: text
+	name: set_order_type_multiline
+	multi line: true
+	default: to_upper(card.order_type)
+	script: to_upper(value)
+	
+
+########Token Stuff
+
+card field:
+	type: text
+	name: sp_text
+	multi line: true
+	editable: false
+	save value: false
+	#default: card.rule_text
+	default: remove_color_tags(tag_contents(tag: "<atom-redtext>", contents: { "\"" }, card.rule_text))
+	#default: get_sp_text(value: card.rule_text)
+	#script: filter_sp_text(input: card.rule_text)
+
+card field:
+	type: text
+	name: rule_text_shadow_top
+	multi line: true
+	editable: false
+	save value: false
+	default: card.sp_text
+
+card field:
+	type: text
+	name: rule_text_shadow_bottom
+	multi line: true
+	editable: false
+	save value: false
+	default: card.sp_text
+	
+card field:
+	type: text
+	name: rule_text_shadow_left
+	multi line: true
+	editable: false
+	save value: false
+	#script: remove_color_tags(value)
+	default: card.sp_text
+	
+card field:
+	type: text
+	name: rule_text_shadow_right
+	multi line: true
+	editable: false
+	save value: false
+	#script: remove_color_tags(value)
+	default: card.sp_text
+	
+	
+card field:
+	type: text
+	name: card_name_shadow_top
+	editable: false
+	multi line: false
+	save value: false
+	default: card.card_name
+card field:
+	type: text
+	name: card_name_shadow_bottom
+	editable: false
+	multi line: false
+	save value: false
+	default: card.card_name
+card field:
+	type: text
+	name: card_name_shadow_left
+	editable: false
+	multi line: false
+	save value: false
+	default: card.card_name
+card field:
+	type: text
+	name: card_name_shadow_right
+	editable: false
+	multi line: false
+	save value: false
+	default: card.card_name
+	
+card field:
+	type: text
+	name: power_reverse_shadow
+	multi line: true
+	editable: false
+	save value: false
+	default: card.power
+	
+card field:
+	type: text
+	name: shield_reverse_shadow
+	multi line: true
+	editable: false
+	save value: false
+	default: card.shield
+	
+card field:
+	type: text
+	name: clan_reverse_shadow
+	multi line: true
+	editable: false
+	save value: false
+	default: card.clan
+	
+card field:
+	type: text
+	name: clan_shadow_3
+	multi line: true
+	editable: false
+	save value: false
+	default: card.clan
+	
+card field:
+	type: text
+	name: clan_shadow_4
+	multi line: true
+	editable: false
+	save value: false
+	default: card.clan
+
+
+
+################################ Collab Handling
+
+card field:
+	type: choice
+	name: monster_element
+	default: "Rainbow"
+	choice: Rainbow
+	choice: Light
+	choice: Dark
+	choice: Fire
+	choice: Wood
+	choice: Water
+	
+################################

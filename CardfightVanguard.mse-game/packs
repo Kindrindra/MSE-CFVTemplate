@@ -1,0 +1,162 @@
+﻿pack type:
+	name: Common
+	filter: card.card_rarity == "Common"
+pack type:
+	name: Rare
+	filter: card.card_rarity == "Rare"
+pack type:
+	name: DoubleRare
+	filter: card.card_rarity == "DoubleRare"
+pack type:
+	name: TripleRare
+	filter: card.card_rarity == "TripleRare"
+pack type:
+	name: SignatureRare
+	filter: card.card_rarity == "VanguardRare" or card.card_rarity == "GenerationRare"
+	
+pack type:
+	name: SpecialRare
+	filter: card.card_rarity == "OriginRare" or card.card_rarity == "SpecialParallel"
+pack type:
+	name: SpecialSignatureRare
+	filter: card.card_rarity == "SpecialVanguardRare"
+#pack type: ####TODO
+#	name: token / rulestip
+#	filter: is_token_card()
+############################################################## Randomized selections
+
+#pack type:
+#	name: mythic rare or rare
+#	selectable: false
+	# In Shards of Alara there are 15 mythic rares and 53 rares.
+	# Each booster has a 1/8 chance of containing a mythic rare.
+	# This means that looking at single mythics : rares, the proportion is
+	#  1*53 : 7*15 = 53 : 105
+	# this is almost exactly 1 : 2,
+	# So, a a single mythic is 2 times as rare as a single normal rare.
+	# 
+	# We use this proportional system instead of a fixed 1:7 system,
+	#  because it copes better with cases where there are few mythics.
+	# For example, if a set has 1 mythic and 20 rares, you would actually
+	# be MORE likely to find the mythic card with the 1:7 system!
+#	select: proportional
+#	item:
+#		name: mythic rare
+#		weight: 1
+#	item:
+#		name: rare
+#		weight: 2
+
+
+############################################################## Common proportions of cards
+#In a pack of vanguard, there are 7 cards; 5 commons and 2 rare+
+#In a box, there are 2 VRs
+
+pack type: #Case generally has 10 of each VR iirc, so... If a case has 24 boxes, and each of those have at least 1 VR, and there are 3 types... About six boxes per case should have a bonus VR
+	name: RR or Special
+	selectable: false
+	select: proportional
+	item:
+		name: DoubleRare
+		weight: 117
+	item:
+		name: SpecialSignatureRare
+		weight: 1
+	item:
+		name: SpecialRare
+		weight: 2
+# (5*24) 120 RR slots in total, and 1 of those is taken up by a SVR, and 2 by SP-adjacents, so you get... 
+
+pack type:
+	name: R or higher
+	selectable: false
+	select: proportional
+	item:
+		name: Rare
+		weight: 360
+	item:
+		name: DoubleRare
+		weight: 117
+		#About 13 copies per card (120 - 3)
+	item: 
+		name: TripleRare
+		weight: 72
+		#About 12 copies per card
+	item:
+		name: SignatureRare
+		weight: 24
+		#About 8 copies per card
+	item:
+		name: SpecialRare
+		weight: 2
+	item:
+		name: SpecialSignatureRare
+		weight: 1
+# (2 * 12 * 24) 576 R+ slots in total,
+
+#pack type: #TODO
+#	name: C or Token
+#	selectable: false
+#	select: proportional
+#	item:
+#		name: Common
+#		weight: 
+#	item:
+#		name: Token
+#		weight: 
+
+############################################################## Card packs
+
+pack type:
+	name: Booster Pack
+	item:
+		name: Common
+		amount: 5
+	item:
+		name: R or higher
+		amount: 2
+		
+pack type:
+	name: Extra Booster Display
+	item:
+		name: Common
+		amount: 60
+	item:
+		name: Rare
+		amount: 15
+	item:
+		name: DoubleRare
+		amount: 4
+	item:
+		name: RR or Special
+		amount: 1
+	item:
+		name: TripleRare
+		amount: 3
+	item:
+		name: SignatureRare
+		amount: 1
+		
+pack type:
+	name: Extra Booster Case
+	item:
+		name: Common
+		amount: 1440
+	item:
+		name: Rare
+		amount: 360
+	item:
+		name: DoubleRare
+		amount: 117
+	item:
+		name: TripleRare
+		amount: 72
+	item:
+		name: SignatureRare
+		amount: 24
+	item:
+		name: SpecialRare
+		amount: 2
+	item:
+		name: SpecialSignatureRare
+		amount: 1
