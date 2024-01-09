@@ -1,0 +1,185 @@
+﻿mse version: 0.3.8
+short name: Wiki
+full name: Wikia Page Exporter
+position hint: 002
+icon: icon.png
+create directory: true
+version: 2021-07-29
+installer group: cardfight/export/text
+
+depends on:
+	package: CardfightVanguard.mse-game
+	version: 2020-02-26
+
+game: CardfightVanguard
+file type: *.txt|*.txt|*.*|*.*
+
+# By Kinny
+# Based on code by Idle Muse, Seeonee, Innuendo, and Pichoro
+
+option field:
+	type: boolean
+	name: generate images
+	description: Exports images with names formatted for wiki use
+	initial: yes
+
+script:
+	break_tag := "\{br\}"
+
+	# turn symbols into text
+	text_symbol_filter :=
+	#Custom
+		replace@(match:"命-Main Phase-払\\[Discard a grade 0 from your hand\\], and play from face down.", replace:" \{\{Command\\|V\}\} ")+
+		replace@(match:"命-Guard Step-払\\[Discard a grade 0 from your hand\\], and play from face down.", replace:" \{\{Command\\|Blitz\}\} ")+
+		replace@(match:"命", replace:" [[Command]] ")+
+	#Circles
+		replace@(match:"先", replace:" (VC) ")+
+		replace@(match:"友", replace:" (RC) ")+
+		replace@(match:"助", replace:" (GC) ")+
+	#Punctuation
+		replace@(match:"右", replace:"\\(")+
+		replace@(match:"左", replace:"\\)")+
+		replace@(match:"上", replace:"\\(")+
+		replace@(match:"下", replace:"\\)")+
+	#Effect Symbols
+		replace@(match:"起", replace:"[ACT]")+
+		replace@(match:"自", replace:"[AUTO]")+
+		replace@(match:"永", replace:"[CONT]")+
+		replace@(match:"度", replace:"[1/Turn]")+
+	#Costs and Refunds
+		replace@(match:"\\]", in_context: "払\\[[^\\]]+<match>",replace:"\}\}")+
+		replace@(match:"払\\[", replace:"\{\{Cost\\|")+
+		replace@(match:"Ｃ", replace:" Counter Blast ")+
+		replace@(match:"Ｆ", replace:" Counter Charge ")+
+		replace@(match:"Ｑ", replace:" Soul Blast ")+
+		replace@(match:"Ｗ", replace:" Soul Charge ")+
+		replace@(match:"➀", replace:"1")+
+		replace@(match:"➁", replace:"2")+
+		replace@(match:"➂", replace:"3")+
+		replace@(match:"⑤", replace:"5")+
+		replace@(match:"[0-9]+", in_context: "(Blast|Charge) <match>" replace:"\\(&\\)")+
+	#Stats and Positions
+		replace@(match:"剣", replace:" [Power]")+
+		replace@(match:"盾", replace:" [Shield]")+
+		replace@(match:"星", replace:" [Critical]")+
+		replace@(match:"眠", replace:" [Rest] ")+
+		replace@(match:"立", replace:" [Stand] ")+
+	#Triggers
+		replace@(match:"醒", replace:" [Stand] ")+
+		replace@(match:"引", replace:" [Draw] ")+
+		replace@(match:"★", replace:" [Critical] ")+
+		replace@(match:"治", replace:" [Heal]" )+
+		replace@(match:"前", replace:" [Front] ")+
+		replace@(match:"超", replace:" [Over] ")+
+	#Mechanics
+		replace@(match:"服", replace:" [overDress] ")+
+		replace@(match:"憑", replace:" [Over Soul] ")+
+	#Custom
+		replace@(match:"命", replace:" [Command] ")+
+	#Remove Extra Spaces
+		replace@(match:" +", replace:" ")+
+		replace@(match:": ", replace:":")+
+		replace@(match:"[)][ ]+,", replace: "),")+
+		replace@(match:"\\[ \\[", replace:"\\[\\[")+
+		replace@(match:"\\[ ", replace: "[")+
+		replace@(match:" \\]", replace: "]")+
+		replace@(match:"\\| ", replace: "\\|")+
+	#Handle Extra Brackets
+		replace@(match:"[(][ ]*[(]", replace: "(")+
+		replace@(match:"[)][ ]*[)]", replace: ")")+
+		replace@(match:"/[ ]*[(]", replace: "/")+
+		replace@(match:"[)][ ]*/", replace: "/")+
+	#Italicize Parenthesis
+		replace@(
+			match: "[(]([^)\n]|[(][^)\n]*[)])*[)]?(\n|$)",
+			in_context: "[ ]<match>|<match></",
+			replace: "\'\'&\'\'"
+		)+
+	#Wiki Hyperlinks
+		replace@(match:"is placed on", replace: "is \\[\\[place\\]\\]d on") +
+		replace@(match:"plant token", replace: "\\[\\[plant token\\]\\]") +
+	#Wiki Formatting
+		#replace@(match: "((\\[ACT\\])|(\\[AUTO\\])|(\\[CONT\\]))",
+		#	in_context: "^.+[^\"]?<match>"
+		#	replace: break_tag + "&"
+		#) +
+		replace@(match: "\n", replace: break_tag)
+		#replace@(match:"●", replace: break_tag + "&")
+		
+	remove_trailing_whitespace := replace@(match:"[ \t]+$", replace:"")
+		
+	order_type_to_word := {
+		myType := card.order_type
+		if myType == "normal" then "Normal Order"
+		else if myType == "blitz" then "Blitz Order"
+		else if myType == "set" then "Set Order"
+		else if myType == "trigger" then "Trigger Order"
+		else if myType == "g order" then "G Order"
+		else if myType == "g blitz order" then "G Blitz Order"
+		else if myType == "g set order" then "G Set Order"
+		else "??? Order"
+	}
+	
+	get_wiki_order_type := {
+		if card.card_frame == "order" then
+			if card.card_trigger != "none" then "TOrder"
+			else if card.order_type == "blitz" then "BOrder"
+			else if card.order_type == "set" then "SOrder"
+			else if is_g() then "GOrder"
+			else "NOrder"
+		else ""
+	}
+	
+	get_format := {
+		if set_era == "D - overDress" then "D"
+		else if set_era == "V - Reboot" then "V"
+		else if set_era == "G - Stride" then "G"
+		else "P"
+	}
+	
+	get_special_icon := {
+		if card.gift_control == "PersonaRide" then "Persona"
+		else if card.gift_control == "none" then ""
+		else card.gift_control
+	}
+	
+	format_illus := replace@(match: "Illus[ ]*/[ ]*", replace: "")
+	
+	format_image_name := replace@(match: "([ ]|,)", replace: "")
+	
+	write_card_image := {
+		write_image_file(card,
+			file:(format_image_name(card.card_name) + ".png"), height: 549 )
+	}
+	
+	write_card := {
+		illusName := format_illus(card.illus_line)
+		specialIcon := get_special_icon()
+		"\n\n"+
+		"\{\{CardTable " +
+		"\n" + "|name = " + remove_trailing_whitespace(card.card_name) +
+		"\n|image = " + format_image_name(card.card_name) + ".png" +
+		( if illusName != "" then ("\n|illust = " + illusName)) +
+		( if specialIcon != "" then ("\n|ride = " + specialIcon)) +
+		( if is_trigger() then "\n" + "|trig = " + card_trigger) +
+		"\n" + "|grade = " + grade_to_number() +
+		( if is_order() then ("\n|unittype = " + get_wiki_order_type())) +
+		( if has_power() then ("\n" + "|power = " + card.power)) +
+		( if has_shield() then ("\n" + "|shield = " + shield_to_number())) +
+		( if is_order() then "\n|skillicon = none") +
+		( if is_order() then "\n|critical = N/A") +
+		( if not is_great_nation_card() then ("\n|clan = " + remove_tags(input: card.clan))) +
+		"\n|nation = " + (if is_great_nation_card() then remove_tags(card.new_nation_control) else remove_tags(card.card_nation)) +
+		"\n|format = " + get_era() +
+		( if not is_order() then ("\n|race = " + card.race)) +
+		"\n|set1 = " + card.set_code + " (" + get_rarity_abbreviation() + ")" +
+		"\n|flavor = " + card.flavor_text + 
+		"\n|effect = " +
+			(if card.secondary_rule_text != "" then text_symbol_filter(remove_tags(card.secondary_rule_text)) + "\n----\n") +
+			text_symbol_filter(remove_tags(card.rule_text)) +
+		(if set.designer != "" then ("\n|creator = " + set.designer)) +
+		"\n\}\}"
+	}
+	(if options.generate_images then write_images := for each card in sort_list(cards, order_by: {input.set_code}) do write_card_image())
+	write_cards := to_text(for each card in sort_list(cards, order_by: {input.set_code}) do write_card())
+	to_string(set.set_name+"\n"+set.description+write_cards)

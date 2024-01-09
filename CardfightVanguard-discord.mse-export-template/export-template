@@ -1,0 +1,108 @@
+﻿mse version: 0.3.8
+short name: Discord
+full name: Discord Text Exporter
+position hint: 001
+icon: icon.png
+version: 2021-07-29
+installer group: cardfight/export/text
+
+depends on:
+	package: CardfightVanguard.mse-game
+	version: 2020-02-26
+
+game: CardfightVanguard
+file type: *.txt|*.txt|*.*|*.*
+
+# By Kinny
+# Based on code by Idle Muse, Seeonee, Innuendo, and Pichoro
+
+script:
+	# turn symbols into text
+	text_symbol_filter :=
+	#Circles
+		replace@(match:"先", replace:" (VC) ")+
+		replace@(match:"友", replace:" (RC) ")+
+		replace@(match:"助", replace:" (GC) ")+
+	#Punctuation
+		replace@(match:"右", replace:"\\(")+
+		replace@(match:"左", replace:"\\)")+
+		replace@(match:"上", replace:"\\(")+
+		replace@(match:"下", replace:"\\)")+
+		replace@(match:"｜", replace:"/")+
+	#Effect Symbols
+		replace@(match:"起", replace:"[ACT]")+
+		replace@(match:"自", replace:"[AUTO]")+
+		replace@(match:"永", replace:"[CONT]")+
+		replace@(match:"度", replace:"[1/Turn]")+
+	#Costs and Refunds
+		replace@(match:"払", replace:" COST")+
+		replace@(match:"Ｃ", replace:"CB")+
+		replace@(match:"Ｆ", replace:"CC")+
+		replace@(match:"Ｑ", replace:"SB")+
+		replace@(match:"Ｗ", replace:"SC")+
+		replace@(match:"➀", replace:"1")+
+		replace@(match:"➁", replace:"2")+
+		replace@(match:"➂", replace:"3")+
+		replace@(match:"⑤", replace:"5")+
+	#Stats and Positions
+		replace@(match:"剣", replace:" [Power]")+
+		replace@(match:"盾", replace:" [Shield]")+
+		replace@(match:"星", replace:" [Critical]")+
+		replace@(match:"眠", replace:" [Rest] ")+
+		replace@(match:"立", replace:" [Stand] ")+
+	#Triggers
+		replace@(match:"醒", replace:" [Stand] ")+
+		replace@(match:"引", replace:" [Draw] ")+
+		replace@(match:"★", replace:" [Critical] ")+
+		replace@(match:"治", replace:" [Heal] ")+
+		replace@(match:"前", replace:" [Front] ")+
+		replace@(match:"超", replace:" [Over] ")+
+	#Mechanics
+		replace@(match:"服", replace:" [overDress] ")+
+		replace@(match:"憑", replace:" [Over Soul] ")+
+	#Custom
+		replace@(match:"命", replace:" [Command] ")+
+	#Remove Extra Spaces
+		replace@(match:" +", replace:" ")+
+		replace@(match:": ", replace:":")+
+		replace@(match:"[)][ ]+,", replace: "),")+
+		replace@(match:"\\[ \\[", replace:"\\[\\[")+
+		replace@(match:"\\[ ", replace: "[")+
+		replace@(match:" \\]", replace: "]")+
+	#Handle Extra Brackets
+		replace@(match:"\\([ ]*\\(", replace: "(")+
+		replace@(match:"\\)[ ]*\\)", replace: ")")+
+		replace@(match:"/[ ]*\\(", replace: "/")+
+		replace@(match:"\\)[ ]*/", replace: "/")+
+	#Italicize Parenthesis
+		replace@(
+			match: "[(]([^)\n]|[(][^)\n]*[)])*[)]?(\n|$)",
+			in_context: "[ ]<match>|<match></",
+			replace: "_&_"
+		)
+		
+	remove_trailing_whitespace := replace@(match:"[ \t]+$", replace:"")
+		
+	order_type_to_word := {
+		myType := card.order_type
+		if myType == "normal" then "Normal Order"
+		else if myType == "blitz" then "Blitz Order"
+		else if myType == "set" then "Set Order"
+		else if myType == "trigger" then "Trigger Order"
+		else if myType == "g order" then "G Order"
+		else if myType == "g blitz order" then "G Blitz Order"
+		else if myType == "g set order" then "G Set Order"
+		else "??? Order"
+	}
+	
+	write_card := {
+		"\n\n"+
+		remove_trailing_whitespace(card.card_name) +
+		"\n" + (if card.new_nation_control == "none" then card.clan else card.new_nation_control) +
+			"/" + (if is_order() then order_type_to_word() else card.race) +
+		(if card.secondary_rule_text != "" then
+			("\n" + text_symbol_filter(remove_tags(card.secondary_rule_text)))) +
+		"\n" + text_symbol_filter(remove_tags(card.rule_text))
+	}
+	write_cards := to_text(for each card in sort_list(cards, order_by: {input.set_code}) do write_card())
+	to_string(set.set_name+"\n"+set.description+write_cards)
