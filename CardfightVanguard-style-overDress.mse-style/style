@@ -1,0 +1,1247 @@
+mse version: 0.3.8
+game: CardfightVanguard
+short name:  overDress
+full name: overDress Template
+icon: icon.png
+position hint: 0
+installer group: cardfight/style/overDress
+#Description: Kinny's V Era version of the vanguard template
+
+version: 2021-02-16
+depends on:
+	package: CardfightVanguard.mse-game
+	version: 2020-02-26
+depends on:
+	package: CardfightVanguard.mse-symbol-font
+	version: 2017-09-10
+
+card width: 375
+card height: 549
+card dpi: 150
+########################################## Extra Scripts
+init script:
+	# Is the unit a special unit?
+	is_g := { 
+		if card.card_frame == "stride" then true
+		else if card.card_frame == "gguard" then true
+		else false
+	}
+	
+	# Scripts for text and flavor boxes
+	rule_lines := { card_style.rule_text.content_lines }
+	secondary_rule_lines := { card_style.secondary_rule_text.content_lines }
+	text_size := { 20*rule_lines() - 2*rule_lines() }
+	textbox_type := { 
+		if rule_lines()+banner_lines() == 1 then 0
+		else if rule_lines()+banner_lines() == 2 then 1
+		else if rule_lines()+banner_lines() > 2 and rule_lines() <= 5 then 2
+		else if rule_lines()+banner_lines() > 5 and rule_lines() <= 7 then 3
+		else if rule_lines()+banner_lines() > 6 and rule_lines() <= 7 then 4
+		else 5
+	}
+	get_flavor_content_width := {
+		if card_style.flavor_text.content_lines == 1 then card_style.flavor_text.content_width + 32
+		else card_style.flavor_text.content_width + 70
+	}
+	line_height := 13
+	locate_flavor := { 
+		if has_two_rules() then locate_secondary_text() - (card_style.secondary_rule_text.content_lines*line_height) - 19
+		else locate_secondary_text() - 11
+	}
+	
+	get_banner := { if styling.Procedure_Banners=="No" then ""
+		else if card.card_frame=="stride" then "<sym>超越</sym>"
+		else if card.card_frame=="gguard" then "gguard"
+		else ""
+	}
+	get_banner_height := {
+		if get_banner()=="" then 0
+		else 24
+	}
+	rules_height := { card_style.rule_text.content_lines*line_height }
+	locate_banner := { 
+		if card.rule_text != "" then get_text_bottom() - 2 - rules_height() - 19
+		else 456
+	}
+	banner_lines := { if get_banner()=="" then 0 else 1 }
+	
+	locate_secondary_text := {
+		locate_banner() - get_banner_height() + 11
+	}
+	
+	get_font := { "VanguardHumana" }
+			#Vera Humana 95 Bold
+			
+	get_rule_alignment := { if styling.justify_text then "bottom left justify" else "bottom left" }
+	#  if rule_lines() == 1 then "bottom center" else 
+			
+	get_shadow_font := { if (is_reverse_SP() and card.card_rarity!="DressSecretRare") then "CardfightVanguard-DOutline" else "CardfightVanguard-Outline"}
+			
+	locate_shadow_position := { if not is_order() then 466 else 487 }
+	
+	get_name_position := { if is_order() then 500 - NameOffset()
+		else if is_frameless() then 490 - NameOffset()
+		else 482 - NameOffset() }
+		
+	NameOffset := {if get_nation()=="ShamanKing" or is_dual() then 2 else 0}
+		
+	get_name_size := { if is_token() then 13.8
+		else if card.card_rarity=="DressSecretRare" then 13.8
+		else 13 }
+	
+	DressFramelessOffset := 50
+	
+	ShamanKingOffset := -11
+	
+	get_name_width := { 230 + (if card.card_rarity=="DressSecretRare" then DressFramelessOffset else if get_nation()=="ShamanKing" then ShamanKingOffset else if is_dual() then -22 else 0) }
+		
+	get_name_left := { 72 - (if card.card_rarity=="DressSecretRare" then (DressFramelessOffset / 2) else if get_nation()=="ShamanKing" then (ShamanKingOffset/2) else 0) }
+
+	get_text_color := {
+		if (is_reverse_SP() and card.card_rarity!="DressSecretRare") or styling.Force_Border_Override=="Encounter" then rgb(255,255,255) else rgb(0,0,0)
+	}
+	
+	get_shadow_color := {
+		if (is_reverse_SP() and card.card_rarity!="DressSecretRare") then rgb(0,0,0) else rgb(255,255,255)
+	}
+	
+	get_name_shadow_color := {
+		if is_reverse_SP() then rgb(0,0,0) else rgb(255,255,255)
+	}
+	
+	get_text_bottom := { if is_order() then 495 else 474 }
+	
+	get_text_top := {
+		if card.rule_text != "" then get_text_bottom() - 2 - rules_height() - 19
+		else 456
+	}
+	
+	get_grade_image := {
+		masked_blend(dark:"duals/" + get_nation() + ".png", light:"D_Layers/Grades/" + card.card_grade + ".png", mask: invert_image("D_Layers/Grades/" + card.card_grade + ".png"))
+		# nation1
+		# nation2 := if not is_dual() then "" else masked_blend(dark:"duals/" + get_dual_nation() + ".png", light:"D_Layers/Grades/" + card.card_grade + ".png", mask: invert_image("D_Layers/Grades/" + card.card_grade + ".png"))
+		# if not is_dual() then nation1 else masked_blend(dark:nation1,light:nation2,mask: "D_Layers/Grades/HalfGrade.png")
+		# combine_blend(image1:"duals/" + get_nation() + ".png", image2:"D_Layers/Grades/" + card.card_grade + ".png", combine:"hard light")
+		#grade := "D_Layers/Grades/" + card.card_grade + ".png"
+		# if is_glitter() then combine_blend(image2:"D_Layers/Grades/" + card.card_grade + ".png", image1:"duals/" + get_nation() + ".png", combine:"darken") else grade
+		# color := if is_dual() then set_mask(image: "textbox/duals/" + get_dual_nation() + ".png", mask: "D_Layers/Grades/HalfGrade.png") else ""
+		# if not is_dual() then grade else set_mask(image:color, mask:grade)
+		# combine_blend(image2:grade, image1:color, combine:"darken")
+		# combine_blend(image2:grade, image1:color, combine:"normal")
+		# combine_blend(image2:"D_Layers/Grades/HalfGrade.png",image1:"textbox/duals/" + get_dual_nation() + ".png",combine:"shadow") else ""
+	}
+	
+	has_overlay := { if styling.Edit_Overlay=="Yes" then true else false }
+	
+	has_two_rules := { (card.order_type == "trigger" and card.trigger_control == "Over") or styling.Secondary_Text_Field=="Yes" }
+	
+	get_monster_element := { if (get_nation() == "MonsterStrike") then "_" + 	card.monster_element else "" }
+	
+	power_top := 507
+	#power_left := { if is_frameless() then 108 else 58 }
+	power_left := { if is_frameless() then 98 else 58 }
+	power_size := { if is_frameless() then 17 else 18 }
+	#power_width := { if is_frameless() then 65 else 100 }
+	power_width := { if is_frameless() then 75 else 100 }
+	
+	
+	rarity_illus_top := { 533 }
+	##{ if not is_order() then 537 else 533 }
+	
+	get_order_shadow := { if card.order_type=="normal" or card.order_type == "multiline normal" then rgb(4,36,100)
+		else if card.order_type=="trigger" then rgb(148,82,0)
+		else if card.order_type=="blitz" or card.order_type == "multiline blitz" then rgb(138,19,27)
+		else rgb(56,74,84) }
+		
+	multiline_order := { if contains(card.order_type, match: "multiline") then true else false }
+	#{ if card.order_type == "multiline normal" or card.order_type == "multiline blitz" then true else false}
+	
+	get_clan_top := { if is_order() then 531 else 498 }
+	
+########################################## Extra styling options
+
+
+########################################## Card fields
+card style:
+	card_image:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: -1
+		##mask: { if is_frameless() or has_custom_namebar() then "border_mask.png" else if is_order() then "order_image_mask.png" else "image_mask.png" }
+		default: image_bg.jpg
+		
+	overlay_image:
+		top: 0
+		left: 0
+		height: { if has_overlay() then 549 else 0 }
+		width: { if has_overlay() then 375 else 0 }
+		z index: 0
+		visible: { has_overlay() }
+		mask: border_mask.png
+		###TODO: { if is_frameless() then "border_mask.png" else "command_image_mask.png" }
+		default: image_bg.jpg
+			
+	new_nation_control:
+		top: { get_name_position() + (if is_frameless() then 20 else 0) }
+		left: { 303 - (if is_frameless() then 103 else 0) - (if is_dual() then 22 else 0) }
+		height: 18
+		width: { if is_dual() then 31 else 20 }
+		z index: 6
+		render style: image
+		
+	dual_nation_control:
+		top: { get_name_position() + (if is_frameless() then 20 else 0) }
+		left: { 323 - (if is_frameless() then 123 else 0) - (if is_dual() then 22 else 0) }
+		height: 18
+		width: { if is_dual() then 31 else 20 }
+		z index: 6
+		render style: image
+		
+	type_control:
+		top: { get_name_position() }
+		left: 0
+		height: 20
+		width: 72
+		# { if is_order() then 72 else 0 }
+		z index: 6
+		#visible: { is_order() }
+		render style: image
+		
+	order_type:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 6
+		render style: image
+		# visible: { is_order() }
+		choice images:
+			normal_unit: D_Layers/CardTypes/D_TypeNormalUnit.png
+			trigger_unit: D_Layers/CardTypes/D_TypeTriggerUnit.png
+			normal_order: D_Layers/CardTypes/D_TypeNormalOrder.png
+			blitz_order: D_Layers/CardTypes/D_TypeBlitzOrder.png
+			set_order: D_Layers/CardTypes/D_TypeSetOrder.png
+			trigger_order: D_Layers/CardTypes/D_TypeTriggerOrder.png
+			multiline_normal: D_Layers/CardTypes/D_TypeNormalOrder_Multiline.png
+			multiline_blitz: D_Layers/CardTypes/D_TypeBlitzOrder_Multiline.png
+			multiline_set: Custom_Layers/D_TypeSetOrder_Multiline.png
+			
+#default: { "D_Layers/D_Type" + card.type_control + "Order" + (if card_style.order_type.content_lines > 1 then "_Multiline" else "") + ".png" }
+		
+	frame_control:
+		top: 450
+		left: 0
+		width: 375
+		height: 100
+		z index: 5
+		render style: image
+
+	card_frame:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 1
+		render style: image
+		mask: border_mask.png
+		visible: { is_token() or not is_frameless() }
+		choice images:
+			normal: { "D_Layers/Frames/Border_NormalUnit" + (if is_encounter() then "_Encounter") + ".png"}
+			trigger: D_Layers/Frames/Border_TriggerUnit.png
+			stride: Custom_Layers/Border_GUnit.png
+			gguard: Custom_Layers/Border_GGuardian.png
+			order: { "D_Layers/Frames/Border" + ( if card.card_trigger == "none" then "_NormalOrder.png" else "_TriggerOrder.png") }
+			token: D_Layers/Frames/Border_Token.png
+			
+### normal: { "D_Layers/Border_" + get_nation() + "_Normal.png" }
+### trigger: { "D_Layers/Border_" + get_nation() + "_Trigger.png" }
+### order: { "D_Layers/Border_" + get_nation() + ( if card.order_type == "trigger" then "_TriggerOrder.png" else "_Order.png") }
+			
+	card_grade:
+		top: 8
+		left: 8
+		height: 40
+		width: 60
+		z index: 6
+		render style: image
+		
+	grade_image:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 8
+		render style: image
+		choice images:
+			default: { "D_Layers/Grades/" + card.card_grade + ".png" }
+			
+	ability_control:
+		top: 53
+		left: 8
+		height: 40
+		width: 40
+		z index: 6
+		render style: image
+		
+	card_ability:
+		top: 3
+		left: 0
+		height: 549
+		width: 375
+		z index: 4
+		render style: image
+		choice images:
+			boost: D_Layers/Abilities/D_Ability_Boost.png
+			intercept: D_Layers/Abilities/D_Ability_Intercept.png
+			twindrive: D_Layers/Abilities/D_Ability_TwinDrive.png
+			tripledrive: Custom_Layers/Abilities/D_Ability_TripleDrive.png
+		
+	gift_control:
+		top: 93
+		left: 8
+		height: 45
+		width: 40
+		z index: 6
+		render style: image
+		
+	card_gift:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 3
+		render style: image
+		choice images:
+			PersonaRide: D_Layers/PersonaRide.png
+			Accel: V_Layers/GiftAccel.png
+			Force: V_Layers/GiftForce.png
+			Protect: V_Layers/GiftProtect.png
+			Stride: V_Layers/TypeStride.png
+			GGuard: V_Layers/TypeGGuard.png
+			
+	trigger_control:
+		top: 8
+		left: 305
+		height: 80
+		width: 60
+		z index: 6
+		render style: image
+			
+	card_trigger:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 3
+		render style: image
+		choice images:
+			Critical: { "D_Layers/Triggers/" + get_era() + "_Trigger_Crit.png" }
+			Draw: { "D_Layers/Triggers/" + get_era() + "_Trigger_Draw.png" }
+			Heal: { "D_Layers/Triggers/" + get_era() + "_Trigger_Heal.png" }
+			Front: { "D_Layers/Triggers/" + get_era() + "_Trigger_Front.png" }
+			Stand: { "D_Layers/Triggers/" + get_era() + "_Trigger_Stand.png" }
+			Over: { "D_Layers/Triggers/" + get_era() + "_Trigger_Over.png" }
+			
+	shield_control:
+		top: 170
+		left: 0
+		height: 95
+		width: { if card.card_frame != "order" then 50 else 0 }
+		z index: 6
+		visible: { card.card_frame != "order" }
+		render style: image
+			
+	card_shield:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 4
+		render style: image
+		visible: { not is_frameless() }
+		choice images:
+			5000: D_Layers/Shields/D_Shield_5k.png
+			10000: D_Layers/Shields/D_Shield_10k.png
+			15000: D_Layers/Shields/D_Shield_15k.png
+			20000: V_Layers/V_Shield20k.png
+			50000: D_Layers/Shields/D_Shield_50k.png
+			GGuard: V_Layers/V_ShieldGGuard.png
+			PerfectGuard: D_Layers/Shields/D_Shield_Sentinel.png
+			CustomShield: D_Layers/Shields/D_ShieldCustom.png
+			CustomSentinel: D_Layers/Shields/D_ShieldNon0Sentinel.png
+			
+	shield:
+		top: 194
+		left: 36
+		height: { if is_custom_shield() then 21 else 0 }
+		width: { if is_custom_shield() then 50 else 0 }
+		alignment: middle center overflow-shrink
+		z index: 6
+		angle: 270
+		visible: { not is_order() and (is_custom_shield() or is_frameless()) }
+		font:
+			name: Impact
+			size: 14
+			color: { if is_sentinel() then rgb(232,224,162) else rgb(233,217,168) }
+			shadow color: rgb(0,0,0)
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 0
+			
+	card_rarity:
+		top: { rarity_illus_top() }
+		left: 77
+		height: 7
+		width: 20
+		z index: 6
+		visible: { not is_token() }
+		render style: image
+			
+	rarity_display:
+		top: -4
+		#{ if not is_order() then 0 else -4 }
+		left: 0
+		height: 549
+		width: 375
+		z index: 3
+		render style: image
+		visible: { not is_token() }
+		choice images:
+			default: { "D_Layers/Rarity/Rarity_" + get_rarity_abbreviation() + ".png" }
+			
+	card_name:
+		top: { get_name_position() }
+		left: { get_name_left() }
+		height: 18
+		width: { get_name_width() }
+		alignment: middle center overflow-shrink
+		z index: 6
+		font:
+			name: Impact
+			size: { get_name_size() }
+			#weight: bold
+			style: italic
+			color: { if card.card_rarity=="DressSecretRare" then rgb(255,253,107) else if is_g() or is_frameless() then rgb(255,247,245) else rgb(0,0,0) }
+			
+	power:
+		top: { power_top }
+		left: { power_left() }
+		height: 21
+		width: { power_width() }
+		alignment: { if is_frameless() then "middle right" else "middle center overflow-shrink" }
+		z index: 6
+		visible: { card.card_frame != "gguard" and not is_order() }
+		font:
+			name: Impact
+			size: { power_size() }
+			weight: { if is_frameless() then "normal" else "bold" }
+			style: italic
+			color: rgb(213,204,51)
+			shadow color: rgb(0,0,0)
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 0
+	
+	race:
+		top: 520
+		left: { if is_frameless() then 229 else if is_encounter() then 276 else 221 }
+		height: { if not is_order() then 10 else 0 }
+		width: { if not is_order() then (if is_encounter() then 50 else 99) else 0 }
+		z index: 6
+		visible: { card.card_frame != "order" }
+		alignment: { if is_frameless() then "left overflow-shrink" else "middle center overflow-shrink" }
+		font:
+			name: Vera Humana 95 Bold
+			size: { if is_frameless() then 5.3 else 8 }
+			scale down to: 7
+			color: rgb(255,247,245)
+			shadow color: rgb(0,0,0)
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 0
+	
+	rule_text:
+		bottom: { get_text_bottom() - 10 }
+		left: 9
+		height: 195
+		width: 358
+		z index: 6
+		alignment: { get_rule_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() - 2 }
+		line height soft: 0.81
+		line height hard: 0.81
+		font:
+			name: { get_font() }
+			italic name: { set.italic_font }
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_text_color() }
+		symbol font:
+			name: CardfightVanguard
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+
+	text_box:
+		top: { if not is_order() then -20 else 0 }
+		###bottom: { get_text_bottom() }
+		left: 0
+		height: 549
+		###{ min(169, (rules_height() +15 + get_banner_height()) ) }
+		width: 375
+		z index: 4
+		visible: { if card.rule_text == "" or is_boxless() then false else true }
+		render style: image
+		choice images:
+			default: { if is_glitter() then combine_blend(image2:"textbox/textbox_" + card_style.rule_text.content_lines + ".png",image1:"duals/" + (if is_dual() then get_dual_nation() else get_nation()) + ".png",combine:"darken") else if is_encounter() then invert_image("textbox/textbox_" + card_style.rule_text.content_lines + ".png")  else recolor_image("textbox/textbox_" + card_style.rule_text.content_lines + ".png", color: rgb(0,0,0))}
+			
+	secondary_text_box:
+		bottom: { locate_secondary_text() + 52 }
+		left: 0
+		height: {if has_two_rules() then 549 else 0}
+		width: {if has_two_rules() then 375 else 0}
+		z index: 4
+		visible: { if card.secondary_rule_text == "" or is_boxless() then false else true }
+		render style: image
+		choice images:
+			default: { if is_encounter() then invert_image("textbox/textbox_" + card_style.secondary_rule_text.content_lines + ".png")  else "textbox/textbox_" + card_style.secondary_rule_text.content_lines + ".png"}
+			
+	secondary_rule_text:
+		bottom: { locate_secondary_text() - 11 }
+		left: 9
+		height: {if has_two_rules() then 195 else 0}
+		width: {if has_two_rules() then 358 else 0}
+		z index: 7
+		alignment: { if secondary_rule_lines() == 1 then "bottom center" else "bottom left justify" }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() - 2 }
+		line height soft: 0.87
+		line height hard: 0.87
+		font:
+			name: { get_font() }
+			italic name: { set.italic_font }
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_text_color() }
+		symbol font:
+			name: CardfightVanguard
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	flavor_text:
+		bottom: { locate_flavor() + 2 }
+		# { if card_style.flavor_text.content_lines >1 then locate_flavor() + 2  else locate_flavor() + 4 }
+		left: 14
+		height: 35
+		# { if card_style.flavor_text.content_lines > 1 then 35 else 21 }
+		width: 348
+		z index: 8
+		alignment: center bottom overflow-shrink
+		padding left: 1
+		padding right: 1
+		padding top: 1
+		padding bottom: 1
+		line height hard: 0.7
+		line height hard max: 0.7
+		font:
+			name: Andalus
+			size: 10
+			weight: bold
+			scale down to: 6
+			color: rgb(255,255,255)
+			
+	flavor_box:
+		bottom: { locate_flavor() }
+		left: { max((14), (188 - get_flavor_content_width()/2)) }
+		height: { if card_style.flavor_text.content_lines > 1 then 33 else 18 }
+		width: { min((348), get_flavor_content_width() ) }
+		z index: 2
+		visible: { if card.flavor_text != "" then true else false }
+		render style: image
+		choice images:
+			default: flavor_bar.png
+			#default: { if card_style.flavor_text.content_lines > 1 then "flavor_bg2.png" else "flavor_bg.png" }
+			
+	illus line:
+		top: { rarity_illus_top() }
+		left: 327
+		width: 40
+		height: 10
+		z index: 6
+		alignment: middle right
+		font:
+			name: Adelon-Serial-Medium
+			weight: bold
+			size: 6
+			color: { if card.card_frame=="trigger" then rgb(0,0,0) else rgb(255,255,255) }
+	
+	set code:
+		top: { rarity_illus_top() }
+		left: 18
+		width: 47
+		height: 7
+		alignment: middle center overflow-shrink
+		z index: 6
+		font:
+			name: Adelon-Serial-Medium
+			weight: bold
+			size: 5.5
+			color: { if card.card_frame=="trigger" then rgb(0,0,0) else rgb(255,255,255) }
+			
+	v_icon_control:
+		top: 529
+		left: 0
+		width: 20
+		height: 20
+		z index: 6
+		render style: image
+
+	v_icon:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 2
+		render style: image
+		mask: border_mask.png
+		choice images:
+			D: D_Layers/DIcon.png
+			
+	set_order_type:
+		top: 504
+		left: 18
+		height: { if card.card_frame == "order" then 10 else 0 }
+		width: { if card.card_frame == "order" and not multiline_order() then 50 else 0 }
+		z index: 7
+		visible: { card.card_frame == "order" and not multiline_order() }
+		alignment: middle center overflow-shrink
+		font:
+			name: Vera Humana 95 Bold
+			size: 7
+			scale down to: 7
+			color: rgb(255,247,245)
+			shadow color: { get_order_shadow() }
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 1
+			
+	custom_nation:
+		top: { if is_frameless() then (get_name_position() + 20) else 490 }
+		left: { if is_frameless() then 200 else 337 }
+		height: { if card.new_nation_control == "Custom" or is_encounter() then 40 else 0 }
+		width: { if card.new_nation_control == "Custom" or is_encounter() then 30 else 0 }
+		z index: 6
+		
+	custom_grade_symbol:
+		top: 8
+		left: 8
+		height: { if card.new_nation_control == "Custom" then 40 else 0 }
+		width: { if card.new_nation_control == "Custom" then 40 else 0 }
+		z index: 7
+		
+	custom_nation_name:
+		top: { if not is_order() then 503 else 523 }
+		left: { if not is_order() then 220 + (if is_frameless() then 9 else 0) else 140 }
+		height: { if card.new_nation_control == "Custom" then 15 else 0 }
+		width: { if card.new_nation_control == "Custom" then 102 else 0 }
+		z index: 7
+		default: image_bg.png
+			
+	monster_element:
+		top: 8
+		left: 8
+		height: { if get_nation() == "MonsterStrike" then 40 else 0 }
+		width: { if get_nation() == "MonsterStrike" then 40 else 0 }
+		z index: 7
+		render style: image
+		
+	critical_control:
+		top: { if is_frameless() then 511 else 517 }
+		left: { if is_frameless() then 174 else 162 }
+		height: 15
+		width: { if is_order() then 0 else if is_frameless() then 25 else 50 }
+		z index: 6
+		visible: { card.card_frame != "order" }
+		render style: image
+		
+	card_critical:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 4
+		render style: image
+		visible: { not is_frameless() }
+		choice images:
+			0: D_Layers/Stats/Crit_Zero.png
+			
+	set_order_type_multiline:
+		top: 499
+		left: 16
+		height: { if card.card_frame == "order" then 18 else 0 }
+		width: { if card.card_frame == "order" and multiline_order() then 55 else 0 }
+		z index: 7
+		visible: { card.card_frame == "order" and multiline_order() }
+		alignment: middle center overflow-shrink
+		line height soft: 0.8
+		line height hard: 0.8
+		font:
+			name: Vera Humana 95 Bold
+			size: 7
+			scale down to: 3
+			color: rgb(255,247,245)
+			shadow color: { get_order_shadow() }
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 1
+			
+	clan:
+		top: { if not is_order() then 520 else 538 }
+		#{ get_clan_top() }
+		left: { if is_frameless() then 229 else if not is_order() then 223 else 163 }
+		height: { if is_encounter() then 10 else 0 }
+		width: { if is_encounter() then 48 else 0 }
+		z index: 6
+		alignment: { if is_frameless() then "left overflow-shrink" else "middle center overflow-shrink" }
+		font:
+			name: Vera Humana 95 Bold
+			size: { if is_frameless() then 5.3 else 8 }
+			scale down to: 7
+			color: rgb(255,247,245)
+			shadow color: rgb(0,0,0)
+			shadow displacement x: 1
+			shadow displacement y: 1
+			shadow blur: 0
+			
+			
+#####Token Stuff
+
+	rule_text_shadow_top:
+		bottom: { locate_shadow_position() - 1 }
+		left: 9
+		height: 140
+		width: 358
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { get_rule_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		line height soft: 0.81
+		line height hard: 0.81
+		font:
+			name: { get_font() }
+			italic name: { set.italic_font }
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: { get_shadow_font() }
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	rule_text_shadow_bottom:
+		bottom: { locate_shadow_position() + 1 }
+		left: 9
+		height: 140
+		width: 358
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { get_rule_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		line height soft: 0.81
+		line height hard: 0.81
+		font:
+			name: { get_font() }
+			italic name: { set.italic_font }
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: { get_shadow_font() }
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	rule_text_shadow_left:
+		bottom: { locate_shadow_position() }
+		left: 8
+		height: 140
+		width: 358
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { get_rule_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		line height soft: 0.81
+		line height hard: 0.81
+		font:
+			name: { get_font() }
+			italic name: { set.italic_font }
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: { get_shadow_font() }
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+	rule_text_shadow_right:
+		bottom: { locate_shadow_position() }
+		left: 10
+		height: 140
+		width: 358
+		z index: 5
+		visible: { is_boxless() }
+		alignment: { get_rule_alignment() }
+		padding left: { get_padding_horizontal() }
+		padding right: { get_padding_horizontal() }
+		padding top: { get_padding_vertical() }
+		padding bottom: { get_padding_vertical() }
+		line height soft: 0.81
+		line height hard: 0.81
+		font:
+			name: { get_font() }
+			italic name: { set.italic_font }
+			size: { get_text_size() }
+			scale down to: 4
+			color: { get_shadow_color() }
+		symbol font:
+			name: { get_shadow_font() }
+			scale down to: 4
+			size: { get_text_size() + 0.3 }
+			
+
+	card_name_shadow_top:
+		top: { get_name_position() - 1 }
+		left: { get_name_left() }
+		height: 18
+		width: { get_name_width() }
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: { get_name_size() }
+			#weight: bold
+			style: italic
+			color: { get_name_shadow_color() }
+			
+	card_name_shadow_bottom:
+		top: { get_name_position() + 1 }
+		left: { get_name_left() }
+		height: 18
+		width: { get_name_width() }
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: { get_name_size() }
+			#weight: bold
+			style: italic
+			color: { get_name_shadow_color() }
+			
+	card_name_shadow_left:
+		top: { get_name_position() }
+		left: { get_name_left() }
+		height: 18
+		width: { get_name_width() }
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: { get_name_size() }
+			#weight: bold
+			style: italic
+			color: { get_name_shadow_color() }
+			
+	card_name_shadow_right:
+		top: { get_name_position() }
+		left: { get_name_left() }
+		height: 18
+		width: { get_name_width() }
+		alignment: middle center overflow-shrink
+		z index: 5
+		visible: { is_frameless() }
+		font:
+			name: Impact
+			size: { get_name_size() }
+			#weight: bold
+			style: italic
+			color: { get_name_shadow_color() }
+			
+			
+	power_reverse_shadow:
+		top: { power_top }
+		left: { power_left() }
+		height: 21
+		width: { power_width() }
+		alignment: { if is_frameless() then "middle right" else "middle center overflow-shrink" }
+		z index: 6
+		visible: { card.card_frame != "order" and card.card_frame != "gguard" }
+		font:
+			name: Impact
+			size: { power_size() }
+			weight: { if is_frameless() then "normal" else "bold" }
+			style: italic
+			color: rgb(213,204,51)
+			shadow color: rgb(0,0,0)
+			shadow displacement x: -1
+			shadow displacement y: -1
+			shadow blur: 0
+			
+	shield_reverse_shadow:
+		top: 194
+		left: 36
+		height: 21
+		width: 50
+		alignment: middle center overflow-shrink
+		z index: 6
+		angle: 270
+		visible: { not is_order() and (is_custom_shield() or is_frameless()) }
+		font:
+			name: Impact
+			size: 14
+			color: { if is_sentinel() then rgb(232,224,162) else rgb(233,217,168) }
+			shadow color: rgb(0,0,0)
+			shadow displacement x: -1
+			shadow displacement y: -1
+			shadow blur: 0
+			
+	set_order_type_reverse_shadow:
+		top: 504
+		left: 18
+		height: { if card.card_frame == "order" then 10 else 0 }
+		width: { if card.card_frame == "order" and not multiline_order() then 50 else 0 }
+		z index: 6
+		visible: { card.card_frame == "order" and not multiline_order() }
+		alignment: middle center overflow-shrink
+		font:
+			name: Vera Humana 95 Bold
+			size: 7
+			scale down to: 7
+			color: rgb(255,247,245)
+			shadow color: { get_order_shadow() }
+			shadow displacement x: -1
+			shadow displacement y: -1
+			shadow blur: 1
+	
+			
+			
+######Extra Style Options
+styling field:
+	type: info
+	name: Fine-Tuning
+	
+styling field:
+	type: boolean
+	name: justify text
+	description: Justify the text. More realistic look, but requires a few workarounds in some situations.
+	
+styling field:
+	type: choice
+	name: Borderless
+	description: For frameless cards
+	choice: No
+	choice: Yes
+
+styling field:
+	type: text
+	name: shrink rule text
+	description: Shrinks text by specified pixels. Negative amount grows the text!
+	
+styling field:
+	type: text
+	name: horizontal padding
+	description: Horizontal padding of rule text (4 by default)
+	
+styling field:
+	type: text
+	name: vertical padding
+	description: Vertical padding of rule text (2 by default)
+	
+	
+styling field:
+	type: info
+	name: Custom
+	
+styling field:
+	type: choice
+	name: Procedure Banners
+	description: Represents abilities such as Stride and G-Guard with a banner
+	choice: No
+	choice: Yes
+	
+styling field:
+	type: choice
+	name: Edit Overlay
+	description: Toggles a second image that overlays the base image
+	choice: No
+	choice: Yes
+	
+styling field:
+	type: choice
+	name: Secondary Text Field
+	description: Adds a second text box
+	choice: No
+	choice: Yes
+	
+styling field:
+	type: choice
+	name: Force Border Override
+	description: Forces a special border
+	choice: None
+	choice: overDress
+	choice: Encounter
+	
+styling field:
+	type: boolean
+	name: Show Frameless Stat Symbols
+	description: Hides the power/crit symbols for framless cards
+	
+#styling field:
+#	type: choice
+#	name: Multiline Order Type
+#	description: Changed the order type box to the larger one seen on the Shaman King reveals.
+#	choice: No
+#	choice: Yes
+	
+	
+###### Extra Fields
+extra card field:
+	type: choice
+	name: ProcInfo
+	editable: false
+	default: card.card_frame
+	
+extra card field:
+	type: choice
+	name: ProcInfoOutline
+	editable: false
+	default: card.card_frame
+	
+extra card field:
+	type: choice
+	name: card_special_frame
+	default: if styling.Force_Border_Override != "None" then styling.Force_Border_Override else if substring(remove_tags(input: card.rule_text), end:1) == "服" then "overDress" else "none"
+	editable: false
+	save value: false
+	
+extra card field:
+	type: choice
+	name: card_namebox
+	default: { if is_frameless() then "none" else "default" }()
+	editable: false
+	
+extra card field:
+	type: choice
+	name: card_nation_field
+	default: "default"
+	editable: false
+	
+extra card field:
+	type: choice
+	name: grade_background
+	default: { if card.card_grade=="NoGrade" then "none" else "default" }()
+	editable: false
+	
+extra card field:
+	type: choice
+	name: card_g_namebox
+	default: { if is_frameless() or not is_g() then "none" else "default" }()
+	editable: false
+	
+extra card field:
+	type: choice
+	name: frameless_power
+	default: { if is_frameless() and styling.Show_Frameless_Stat_Symbols then card.card_frame else "none" }()
+	editable: false
+	
+extra card field:
+	type: choice
+	name: frameless_crit
+	default: { if is_frameless() and has_power() and styling.Show_Frameless_Stat_Symbols then card.card_critical else "hide" }()
+	editable: false
+	
+extra card field:
+	type: choice
+	name: clan_emblem
+	default: { replace(remove_tags(card.clan), match:" ", replace:"") }()
+	editable: false
+	
+extra card field:
+	type: choice
+	name: clan_field
+	default: "default"
+	editable: false
+	
+#extra card field:
+#	type: text
+#	name: set_order_type_reverse_shadow_multiline
+#	editable: false
+#	save value: false
+	#default: card.set_order_type_multiline
+
+	
+## Extra Styles
+	
+extra card style:
+	ProcInfo:
+		bottom: { locate_banner() + 14 }
+		left: 13
+		height: 23
+		width: 350
+		z index: 6
+		render style: image
+		visible: {styling.Procedure_Banners=="Yes"}
+		choice images:
+			stride: Custom_Layers/Banner_Stride.png
+			gguard: Custom_Layers/Banner_GGuard.png
+			
+	ProcInfoOutline:
+		bottom: { locate_banner() + 16 }
+		left: 11
+		height: 27
+		width: 354
+		z index: 5
+		render style: image
+		visible: {styling.Procedure_Banners=="Yes" and is_boxless()}
+		choice images:
+			stride: Custom_Layers/Banner_StrideSP.png
+			gguard: Custom_Layers/Banner_GGuardSP.png
+			
+	card_special_frame:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 2
+		render style: image
+		choice images:
+			overDress: D_Layers/overDress_Frame.png
+			Encounter: { "D_Layers/" + (if is_order() then "order_" else "") + "encounter_Frame.png" }
+			
+	card_namebox:
+		top: { if is_order() then 18 else 0 }
+		left: 0
+		height: 549
+		width: 375
+		z index: 5
+		render style: image
+		choice images:
+			default: { if is_dual() then masked_blend(light: "D_Layers/Nameboxes/Duals/" + get_nation() + "_Namebox.png", dark: "D_Layers/Nameboxes/Duals/" + get_dual_nation() + "_Namebox.png", mask: "D_Layers/Nameboxes/Duals/Dual_Namebox_Mask.png") else "D_Layers/Nameboxes/" + get_nation() + get_monster_element() + "_Namebox.png" }
+			
+	card_nation_field:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 5
+		render style: image
+		choice images:
+			default: { if is_dual() then masked_blend(light: "D_Layers/NationFields/Duals/" + get_nation() + (if is_order() then "_Order") + ".png", dark: "D_Layers/NationFields/Duals/" + get_dual_nation()+ (if is_order() then "_Order") + ".png", mask: "D_Layers/NationFields/Duals/Dual_NationField_Mask" + (if is_order() then "_Order" else "") +".png") else "D_Layers/NationFields/" + get_nation() + (if is_order() then "_Order" else if is_frameless() then "_Token" else "") + ".png" }
+			
+	grade_background:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 7
+		render style: image
+		choice images:
+			default: { if is_glitter() then "D_Layers/GradeCircles/Glitter_GradeCircle.png" else if is_dual() then (masked_blend(dark:"D_Layers/GradeCircles/" + get_nation() + "_GradeCircle.png",light:"D_Layers/GradeCircles/" + get_dual_nation() + "_GradeCircle.png", mask: "D_Layers/GradeCircles/HalfCircle.png")) else ("D_Layers/GradeCircles/" + get_nation()) + get_monster_element() + "_GradeCircle.png" }
+	
+	card_g_namebox:
+		top: { if is_order() then 18 else 0 }
+		left: 0
+		height: 549
+		width: 375
+		z index: 5
+		render style: image
+		choice images:
+			default: { "D_Layers/Nameboxes/" + card.card_frame + ( if get_nation() == "CrayElemental" or get_nation() == "Custom" then "_Cray" else "" ) + "_Namebox.png" }
+			
+	frameless_power:
+		top: 0
+		left: { if has_power() then (power_width() - 12) - card_style.power.content_width else 0 }
+		height: 549
+		width: 375
+		z index: 5
+		render style: image
+		choice images:
+			normal: D_Layers/Stats/Frameless_Power.png
+			trigger: D_Layers/Stats/Frameless_Power.png
+			stride: D_Layers/Stats/Frameless_Power.png
+			gguard: Custom_Layers/Frameless_GGuard.png
+			
+	frameless_crit:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 5
+		render style: image
+		choice images:
+			0: D_Layers/Stats/Frameless_Crit_Zero.png
+			1: D_Layers/Stats/Frameless_Crit_One.png
+			
+	clan_emblem:
+		top: 0
+		left: 0
+		height: 549
+		width: 375
+		z index: 6
+		render style: image
+		visible: { is_encounter() }
+		choice images:
+			RoyalPaladin: D_Layers/Emblems/Emblem_RoyalPaladin.png
+			GoldPaladin: D_Layers/Emblems/Emblem_GoldPaladin.png
+			ShadowPaladin: D_Layers/Emblems/Emblem_ShadowPaladin.png
+			OracleThinkTank: D_Layers/Emblems/Emblem_OracleThinkTank.png
+			Genesis: D_Layers/Emblems/Emblem_Genesis.png
+			AngelFeather: D_Layers/Emblems/Emblem_AngelFeather.png
+			Kagero: D_Layers/Emblems/Emblem_Kagero.png
+			Nubatama: D_Layers/Emblems/Emblem_Nubatama.png
+			Tachikaze: D_Layers/Emblems/Emblem_Tachikaze.png
+			Murakumo: D_Layers/Emblems/Emblem_Murakumo.png
+			Narukami: D_Layers/Emblems/Emblem_Narukami.png
+			NeoNectar: D_Layers/Emblems/Emblem_NeoNectar.png
+			GreatNature: D_Layers/Emblems/Emblem_GreatNature.png
+			Megacolony: D_Layers/Emblems/Emblem_Megacolony.png
+			AquaForce: D_Layers/Emblems/Emblem_AquaForce.png
+			Granblue: D_Layers/Emblems/Emblem_Granblue.png
+			BermudaTriangle: D_Layers/Emblems/Emblem_BermudaTriangle.png
+			DarkIrregulars: D_Layers/Emblems/Emblem_DarkIrregulars.png
+			SpikeBrothers: D_Layers/Emblems/Emblem_SpikeBrothers.png
+			PaleMoon: D_Layers/Emblems/Emblem_PaleMoon.png
+			GearChronicle: D_Layers/Emblems/Emblem_GearChronicle.png
+			NovaGrappler: D_Layers/Emblems/Emblem_NovaGrappler.png
+			DimensionPolice: D_Layers/Emblems/Emblem_DimensionPolice.png
+			LinkJoker: D_Layers/Emblems/Emblem_LinkJoker.png
+			AetherCrescent: D_Layers/Emblems/Emblem_AetherCrescent.png
+			
+	
+	clan_field:
+		top: { if not is_order() then 0 else 28 }
+		left: { if not is_order() then 0 else -60 }
+		height: { if not is_order() then 549 else 539 }
+		width: 375
+		z index: 5
+		render style: image
+		visible: { is_encounter() }
+		choice images:
+			default: { "D_Layers/NationFields/Clans/Clan_" + get_nation() + ".png" }
+			
