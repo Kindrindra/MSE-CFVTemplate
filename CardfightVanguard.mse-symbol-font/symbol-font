@@ -1,0 +1,514 @@
+mse version: 0.3.8
+version: 2018-02-02
+short name:  Cardfight
+full name: Cardfight!! Vanguard symbols
+position hint: 1
+installer group: CardfightVanguard/symbol font
+
+image font size: 125
+horizontal space: 1
+
+symbol:
+	code: Ｃ
+	image: counterblast.png
+	enabled: { use_old_cost_symbols() }
+	image font size: 24
+symbol:
+	code: Ｑ
+	image: soulblast.png
+	enabled: { use_old_cost_symbols() }
+	image font size: 24
+symbol:
+	code: Ｗ
+	image: soulcharge.png
+	enabled: { use_old_cost_symbols() }
+	draw text: 0
+	image font size: 24
+symbol:
+	code: 立
+	image: stand.png
+	image font size: 90
+symbol:
+	code: 眠
+	image: rest.png
+	image font size: 90
+symbol:
+	code: 剣
+	image: script: recolor_image("power_red.png", color: get_text_color())
+	image font size: 2000
+symbol:
+	code: 盾
+	image: shield.png
+	image font size: 90
+symbol:
+	code: 星
+	image: critical.png
+	image font size: 90
+symbol:
+	code: 助
+	image: guardian.png
+	image font size: 139
+symbol:
+	code: 友
+	image: rearguard.png
+	image font size: 138
+symbol:
+	code: 先
+	image: vanguard.png
+	image font size: 138
+symbol:
+	code: B
+	image: boost.png
+	image font size: 30
+symbol:
+	code: I
+	image: intercept.png
+	image font size: 30
+symbol:
+	code: T
+	image: twindrive.png
+	image font size: 30
+symbol:
+	code: U
+	image: tridrive.png
+	image font size: 30
+symbol:
+	code: 起
+	image: act.png
+	image font size: 60
+symbol:
+	code: 自
+	image: auto.png
+	image font size: 60
+symbol:
+	code: 永
+	image: cont.png
+	image font size: 60
+symbol:
+	code: lb4
+	image: lb4.png
+	image font size: 21
+symbol:
+	code: lb5
+	image: lb5.png
+	image font size: 21
+symbol:
+	code: Ⅰ
+	image: gb1.png
+	image font size: 122
+symbol:
+	code: Ⅱ
+	image: gb2.png
+	image font size: 122
+symbol:
+	code: Ⅲ
+	image: gb3.png
+	image font size: 38
+symbol:
+	code: Ⅷ
+	image: gb8.png
+	image font size: 38
+symbol:
+	code: 越
+	image: stride.png
+	image font size: 23
+symbol:
+	code: 放
+	image: gguardian.png
+	image font size: 24
+symbol: 
+	code: 双
+	image: legion.png
+	image font size: 22
+symbol:
+	code: leg18
+	image: legion18.png
+	image font size: 20
+symbol:
+	code: leg19
+	image: legion19.png
+	image font size: 20
+symbol:
+	code: leg20
+	image: legion20.png
+	image font size: 20
+symbol:
+	code: leg21
+	image: legion21.png
+	image font size: 20
+symbol:
+	code: leg22
+	image: legion22.png
+	image font size: 20
+symbol:
+	code: leg23
+	image: legion23.png
+	image font size: 20
+symbol:
+	code: leg24
+	image: legion24.png
+	image font size: 20
+symbol:
+	code: 右
+	image: script: recolor_image("left_bracket_red.png", color: get_text_color())
+	image font size: 58
+symbol:
+	code: 左
+	image: script: recolor_image("right_bracket_red.png", color: get_text_color())
+	image font size: 58
+symbol:
+	code: 上
+	image: left_bracket_red.png
+	image font size: 58
+symbol:
+	code: 下
+	image: right_bracket_red.png
+	image font size: 58
+symbol:
+	code: ｜
+	image: script: recolor_image("separator_red.png", color: get_text_color())
+	image font size: 54
+symbol:
+	code: ¦
+	image: separator_red.png
+	image font size: 54
+symbol:
+	code: 開
+	image: script: recolor_image("left_quota_red.png", color: get_text_color())
+	image font size: 27
+symbol:
+	code: 閉
+	image: script: recolor_image("right_quota_red.png", color: get_text_color())
+	image font size: 27
+symbol:
+	code: Ｇ
+	image: GFlip.png
+	image font size: 75
+#symbol:
+#	code: _
+#	image: blank.png
+#	image font size: 58
+################################## New symbols 2018-02-XX
+symbol:
+	code: Ｆ
+	image: countercharge.png
+	enabled: { use_old_cost_symbols() }
+	image font size: 18
+symbol:
+	code: 度
+	image: _onceperturn.png
+	image font size: 20
+symbol:
+	code: Ⅳ
+	image: _gb4.png
+	image font size: 122
+symbol:
+	code: Ⅴ
+	image: _gb5.png
+	image font size: 122
+symbol:
+	code: 終
+	image: ult_stride.png
+	image font size: 19
+################################## New symbols 2019-06-XX
+symbol:
+	code: 払
+	image: _cost.png
+	image font size: 140
+symbol:
+	code: Ｃ
+	image: counter_blast_v.png
+	image font size: 50
+symbol:
+	code: Ｆ
+	image: counter_charge_v.png
+	image font size: 50
+symbol:
+	code: Ｑ
+	image: soul_blast_v.png
+	image font size: 50
+symbol:
+	code: Ｗ
+	image: soul_charge_v.png
+	image font size: 50
+symbol:
+	code: Ｂ
+	image: _gb.png
+	image font size: 120
+symbol:
+	code: 守
+	image: GiftIcon_Protect.png
+	image font size: 40
+symbol:
+	code: 速
+	image: GiftIcon_Accel.png
+	image font size: 40
+symbol:
+	code: 力
+	image: GiftIcon_Force.png
+	image font size: 40
+symbol:
+	code: 音
+	image: melody.png
+	image font size: 10
+	
+################################## New symbols 2020-10-19
+symbol:
+	code: 治
+	image: trigger_heal_new.png
+	image font size: 39
+####symbol:
+####	code: 醒
+####	image: standtrigger.png
+####	image font size: 48
+symbol:
+	code: 醒
+	image: trigger_stand_new.png
+	image font size: 39
+symbol:
+	code: ★
+	image: trigger_critical_new.png
+	image font size: 39
+symbol:
+	code: 引
+	image: trigger_draw_new.png
+	image font size: 39
+symbol:
+	code: 前
+	image: trigger_front_new.png
+	image font size: 39
+	
+################################## New symbols 2021-02-10
+
+symbol:
+	code: 服
+	image: overDress.png
+	image font size: 63
+	
+################################## New symbols 2021-04-07
+
+symbol:
+	code: 超
+	image: overTrigger.png
+	image font size: 39
+	
+################################## New symbols 2021-07-25
+
+symbol:
+	code: Ｏ
+	image: _onceperfight.png
+	image font size: 40
+	
+################################## New symbols 2021-10-21
+
+symbol:
+	code: 憑
+	image: OverSoul.png
+	image font size: 17
+	
+################################## New symbols 2022-12-29
+
+symbol:
+	code: 輝
+	image: Glitter.png
+	image font size: 65
+	
+################################## Custom symbols
+symbol:
+	code: ラブ
+	image: concert.png
+	image font size: 40
+symbol:
+	code: Ｈ
+	image: discard_s.png
+	image font size: 40
+symbol:
+	code: Ｄ
+	image: draw_s.png
+	image font size: 40
+symbol:
+	code: gbx
+	image: _gbx.png
+	image font size: 122
+symbol:
+	code: 命
+	image: command.png
+	image font size: 28
+symbol:
+	code: 相
+	image: NemesisSnacc.png
+	image font size: 30
+################################## Mana circle symbols
+symbol:
+	image: v_sb_circle.png
+	image font size: 155
+	code: [0-9]+(?![C])
+	regex: yes
+	draw text: 0
+	text margin left:   .2
+	text margin right:  .2
+	text margin top:    -.1
+	text margin bottom: -.1
+	text font:
+		name: Hemi Head Rg Bold
+		size: 1
+		color: rgb(255,255,255)
+		max stretch: 0
+symbol:
+	image: v_cb_circle.png
+	image font size: 155
+	code: ([0-9])C
+	regex: yes
+	draw text: 1
+	text margin left:   .2
+	text margin right:  .2
+	text margin top:    -.1
+	text margin bottom: -.1
+	text font:
+		name: Hemi Head Rg Bold
+		size: 1
+		color: rgb(255,255,255)
+		max stretch: 0
+symbol:
+	image: v_null_circle.png
+	image font size: 155
+	code: [^0-9➀➁➂④⑤]
+	regex: yes
+	draw text: 0
+	#text margin left:   .14
+	#text margin right:  .2
+	text margin top:    -.20
+	text margin bottom: -.1
+	text font:
+		name: VanguardHumana
+		size: { get_text_size() }
+		color: rgb(255,255,255)
+		max stretch: 0.57
+symbol:
+	image: cb_circle_1.png
+	image font size: 155
+	code: ➀
+symbol:
+	image: cb_circle_2.png
+	image font size: 155
+	code: ➁
+symbol:
+	image: cb_circle_3.png
+	image font size: 155
+	code: ➂
+symbol:
+	image: cb_circle_4.png
+	image font size: 155
+	code: ④
+symbol:
+	image: cb_circle_5.png
+	image font size: 155
+	code: ⑤
+symbol:
+	image: discard_circle_1.png
+	image font size: 155
+	code: ①
+
+
+################################## Symbol menu
+insert symbol menu:
+	item:
+		name: Effect Type
+		item: 起
+		item: 自
+		item: 永
+	item:
+		name: Restictions
+		item: 度
+		item: Ｏ
+	item:
+		name: Locations
+		item: 先
+		item: 友
+		item: 助
+		item: 右
+		item: 左
+		item: ｜
+		item: 開
+		item: 閉
+	item:
+		name: Resources
+		item: 払
+		item: Ｃ
+		item: Ｆ
+		item: Ｑ
+		item: Ｗ
+		item: F
+			type: custom
+			name: Standalone SB amount
+		item: ➀
+		item: ➁
+		item: ➂
+		item: ④
+		item: ⑤
+	item:
+		name: Stats
+		item: 剣
+		item: 盾
+		item: 星
+	item:
+		name: Stand/Rest
+		item: 立
+		item: 眠
+	item:
+		name: skills
+		item: B
+		item: I
+		item: T
+		item: U
+	item:
+		name: triggers
+		item: 治
+		item: 醒
+		item: ★
+		item: 引
+		item: 前
+		item: 超
+	item:
+		name: Special Mechanics
+		item: lb4
+		item: lb5
+		item: 越
+		item: 終
+		item: 放
+		item:
+			name: Legion
+			item: 双
+			item: leg18
+			item: leg19
+			item: leg20
+			item: leg21
+			item: leg22
+			item: leg23
+			item: leg24
+		item:
+			name: Generation Break
+			item: Ⅰ
+			item: Ⅱ
+			item: Ⅲ
+			item: Ⅳ
+			item: Ⅴ
+			item: Ⅷ
+			item: gbx
+			item: Ｂ
+		item:
+			name: Gift
+			item: 守
+			item: 速
+			item: 力
+		item: 服
+		item: 憑
+		item: 輝
+	item:
+		name: custom
+		item: Ｇ
+		item: Ｈ
+		item: Ｄ
+		item: ラブ
+		item: ①
+		item: 命
